@@ -12,8 +12,6 @@ const AUTH_CHOICE_STORAGE_KEY = 'complete_auth_choice';
 // App Init entry point
 window.addEventListener('DOMContentLoaded', async () => {
   // 1. Setup real-time clock and midnight detector
-  updateTime();
-  setInterval(updateTime, 1000);
   setInterval(checkMidnightUpdate, 5000); // Check midnight transition every 5s
 
   // 2. Initialize date navigator to today (KST)
@@ -170,15 +168,8 @@ function revokeLocalTaskReward(taskId) {
   return amount;
 }
 
-// Time formatting
-function updateTime() {
-  const now = new Date();
-  let hours = now.getHours();
-  let minutes = now.getMinutes();
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  document.getElementById('phoneTime').textContent = `${hours}:${minutes}`;
-}
+// Time formatting removed as status bar was removed
+
 
 // Real-time midnight auto refresh (Slide 6 spec)
 function checkMidnightUpdate() {

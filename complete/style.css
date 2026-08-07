@@ -1558,8 +1558,46 @@ input:focus-visible {
   font-family: 'Outfit', sans-serif;
   font-size: 9px;
   font-weight: 800;
-  color: var(--text-muted);
   text-transform: uppercase;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.shop-card-tag.tag-special {
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.12);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.shop-card-tag.tag-point {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.shop-card-tag.tag-basic {
+  color: #4b5563;
+  background: rgba(75, 85, 99, 0.12);
+  border: 1px solid rgba(75, 85, 99, 0.25);
+}
+
+.shop-prob-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #059669;
+  background: rgba(5, 150, 105, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.shop-prob-badge.owned {
+  color: #9ca3af;
+  background: rgba(156, 163, 175, 0.12);
 }
 
 .shop-card-name {

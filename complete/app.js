@@ -1350,9 +1350,6 @@ async function renderWeeklyStats() {
     const bar = document.createElement('div');
     bar.className = `chart-bar-container ${isToday ? 'today' : ''}`;
     bar.innerHTML = `
-      <div class="chart-mini-avatar" id="miniAvatar-${idx}" data-has-record="${hasRecord}" style="opacity: 0; bottom: 18px;">
-        ${miniSvgStr}
-      </div>
       <div class="chart-bar-wrap" title="${dateString} · ${hasRecord ? `${val}개 완료` : '아직 기록 없음'}">
         <div class="chart-bar-fill" style="height: 0%"></div>
       </div>
@@ -1361,68 +1358,6 @@ async function renderWeeklyStats() {
     weeklyContainer.appendChild(bar);
   });
 }
-
-function animateHistoryBars() {
-  const fills = document.querySelectorAll('.chart-bar-fill');
-  const miniAvatars = document.querySelectorAll('.chart-mini-avatar');
-  
-  window.godsaengStore.getWeeklyAchievement().then(arr => {
-    arr.forEach((val, idx) => {
-      if (fills[idx]) {
-        const pct = Math.round((val / 3) * 100);
-        fills[idx].style.height = `${pct}%`;
-        
-        // Align mini avatar bottom positioning to top of graph
-        if (miniAvatars[idx] && miniAvatars[idx].dataset.hasRecord === 'true') {
-          const barHeight = Math.round((val / 3) * 70); // 70px is bar max height
-          miniAvatars[idx].style.bottom = `${barHeight + 18}px`;
-          miniAvatars[idx].style.opacity = '1';
-        }
-      }
-    });
-  });
-}
-
-// Render Daily archive text scrolls (Slide 9 spec)
-function renderArchiveList() {
-  const container = document.getElementById('archiveScroll');
-  if (!container) return;
-
-  container.innerHTML = '';
-  const allLocalTasks = readTaskMap();
-  
-  // Sort date keys descending
-  const sortedDates = Object.keys(allLocalTasks).sort().reverse();
-  
-  let validRowsCount = 0;
-
-  sortedDates.forEach(date => {
-    const list = allLocalTasks[date] || [];
-    const completedTasks = list.filter(t => t.is_done);
-
-    if (completedTasks.length > 0) {
-      validRowsCount++;
-      const row = document.createElement('div');
-      row.className = 'archive-row';
-      
-      const taskNames = completedTasks.map(t => t.content).join(', ');
-      
-      row.innerHTML = `
-        <span class="archive-date">${date}</span>
-        <span class="archive-tasks">${taskNames}</span>
-      `;
-      container.appendChild(row);
-    }
-  });
-
-  if (validRowsCount === 0) {
-    container.innerHTML = `<span style="font-size: 11px; color: var(--text-muted); text-align: center; display: block; margin-top: 30px;">아직 완료한 과거 루틴 기록이 없습니다.</span>`;
-  }
-}
-
-// ==========================================================================
-// SHOP SYSTEM IMPLEMENTATION
-// ==========================================================================
 
 async function renderMarket(category = 'all') {
   const grid = document.getElementById('marketGrid');
@@ -1438,6 +1373,10 @@ async function renderMarket(category = 'all') {
   const purchased = await window.godsaengStore.getPurchasedItems();
 
   const catalogs = window.godsaengStore.itemsCatalog;
+  const storeItems = Object.keys(catalogs);
+  const unownedStore = storeItems.filter(id => !purchased.includes(id));
+  const storeChancePerItem = unownedStore.length > 0 ? (35.0 / unownedStore.length).toFixed(1) : '0.0';
+
   // 등급 우선순위 정렬 (Special > Point > Basic)
   const gradeOrder = { 'Special': 3, 'Point': 2, 'Basic': 1 };
   const sortedItems = Object.entries(catalogs).sort((a, b) => {
@@ -1463,12 +1402,16 @@ async function renderMarket(category = 'all') {
     if (category !== 'all' && itemCategory !== category) continue;
 
     displayedCount++;
+    const gradeClass = item.grade === 'Special' ? 'tag-special' : (item.grade === 'Point' ? 'tag-point' : 'tag-basic');
 
     const card = document.createElement('div');
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
-        <span class="shop-card-tag">${item.grade}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="shop-card-tag ${gradeClass}">${item.grade}</span>
+          <span class="shop-prob-badge">뽑기 ${storeChancePerItem}%</span>
+        </div>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
       </div>
@@ -1544,11 +1487,17 @@ async function renderCloset(category = 'all') {
     else if (isTitle) actionLabel = active ? '칭호 해제' : '칭호 장착';
     else if (isSkin) actionLabel = id === 'default' && active ? '기본 스킨' : (active ? '스킨 해제' : '스킨 적용');
 
+    const itemGrade = item.grade || 'Basic';
+    const gradeClass = itemGrade === 'Special' ? 'tag-special' : (itemGrade === 'Point' ? 'tag-point' : 'tag-basic');
+
     const card = document.createElement('div');
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
-        <span class="shop-card-tag">${item.grade || 'Title'}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="shop-card-tag ${gradeClass}">${itemGrade}</span>
+          <span class="shop-prob-badge owned">0.0% (보유함)</span>
+        </div>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
       </div>

@@ -376,15 +376,43 @@ function setupEventListeners() {
   document.getElementById('importGuestDataBtn').addEventListener('click', importGuestDataToSupabase);
   document.getElementById('logoutBtn').addEventListener('click', logoutCurrentUser);
   document.getElementById('resetDataBtn')?.addEventListener('click', async () => {
-    if (confirm('모든 뽑기 기록과 옷장 데이터, 가중치를 최초 상태로 초기화하시겠습니까?')) {
+    if (confirm('이전 루틴 기록, 완료 내역, 획득 보상, 옷장 및 인벤토리를 포함한 모든 데이터를 초기화하시겠습니까?')) {
+      // 1. Reset Store data (Coins, Inventory, Avatar, Weekly/Monthly Stats)
       await window.godsaengStore.resetData();
+
+      // 2. Clear all local task history, rewards, custom routine templates
+      localStorage.removeItem(scopedStorageKey(TASKS_STORAGE_KEY));
+      localStorage.removeItem(scopedStorageKey(REWARDS_STORAGE_KEY));
+      localStorage.removeItem(scopedStorageKey(CUSTOM_ROUTINES_STORAGE_KEY));
+
+      // Also clear legacy unscoped keys if present
+      localStorage.removeItem(TASKS_STORAGE_KEY);
+      localStorage.removeItem(REWARDS_STORAGE_KEY);
+      localStorage.removeItem(CUSTOM_ROUTINES_STORAGE_KEY);
+
+      // 3. If Supabase is active, clear tasks & custom templates in cloud DB
+      if (window.godsaengStore.isSupabaseActive && dbSupabase && currentAuthUser) {
+        try {
+          await dbSupabase.from('tasks').delete().eq('user_id', currentAuthUser.id);
+          await dbSupabase.from('routine_templates').delete().eq('user_id', currentAuthUser.id);
+        } catch (e) {
+          console.warn('Supabase cloud tasks reset failed', e);
+        }
+      }
+
+      // 4. Reload state & re-render UI views
+      await loadStateForDate(currentDateStr);
+      renderCustomRoutineLibrary();
       await renderMarket();
       await renderCloset();
       await updateAvatarDisplay();
+      await renderWeeklyStats();
+      await renderGrassMap();
       await renderProbabilityModal();
+
       const coins = await window.godsaengStore.getCoins();
       document.getElementById('coinCount').textContent = coins;
-      alert('모든 데이터가 성공적으로 초기화되었습니다.');
+      alert('이전 기록을 포함한 모든 데이터가 성공적으로 초기화되었습니다.');
       closeAuthModal();
     }
   });

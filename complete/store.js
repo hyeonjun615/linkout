@@ -565,7 +565,35 @@ class GodsaengStore {
     localStorage.removeItem(this.equippedKey);
     localStorage.removeItem(this.skinKey);
     localStorage.removeItem(this.titleKey);
+    localStorage.removeItem(this.weeklyKey);
+    localStorage.removeItem(this.monthlyGrassKey);
     localStorage.setItem(this.coinKey, '10'); // Reset to default 10 coins
+
+    // Clear legacy unscoped keys if present
+    localStorage.removeItem('complete_purchased_items');
+    localStorage.removeItem('complete_equipped_items');
+    localStorage.removeItem('complete_skin');
+    localStorage.removeItem('complete_active_title');
+    localStorage.removeItem('complete_weekly_achievement');
+    localStorage.removeItem('complete_monthly_grass');
+    localStorage.setItem('complete_coins', '10');
+
+    if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
+      try {
+        await this.supabaseClient
+          .from('profiles')
+          .update({
+            coins: 10,
+            equipped_skin: 'default',
+            active_title_id: 'beginner'
+          })
+          .eq('id', this.currentUserId);
+      } catch (e) {
+        console.error("Supabase reset profile failed", e);
+      }
+    }
+
+    this.initLocalStorage();
     return true;
   }
 

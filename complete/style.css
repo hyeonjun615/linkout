@@ -226,7 +226,8 @@ body {
   z-index: 80;
 }
 
-.nav-date-btn {
+.nav-date-btn,
+.nav-menu-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -240,7 +241,14 @@ body {
   transition: background 0.2s, transform 0.15s;
 }
 
-.nav-date-btn:active {
+.nav-menu-btn {
+  margin-left: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.nav-date-btn:active,
+.nav-menu-btn:active {
   transform: scale(0.92);
 }
 

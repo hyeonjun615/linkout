@@ -261,6 +261,10 @@ function setupEventListeners() {
     status.className = 'api-key-status-msg success';
   });
 
+  // Separate Market / Closet category state
+  let currentMarketCategory = 'all';
+  let currentClosetCategory = 'all';
+
   // Shop subtabs
   const shopNavItems = document.querySelectorAll('.shop-nav-item');
   shopNavItems.forEach(subtab => {
@@ -272,12 +276,15 @@ function setupEventListeners() {
       document.querySelectorAll('.shop-subcontent-panel').forEach(p => p.classList.remove('active'));
       document.getElementById(`subtab-${targetId}`).classList.add('active');
 
+      const activeCat = targetId === 'closet' ? currentClosetCategory : currentMarketCategory;
+      document.querySelectorAll('.closet-tab').forEach(t => {
+        t.classList.toggle('active', t.getAttribute('data-category') === activeCat);
+      });
+
       if (targetId === 'closet') {
-        const cat = document.querySelector('.closet-tab.active')?.getAttribute('data-category') || 'all';
-        renderCloset(cat);
+        renderCloset(currentClosetCategory);
       } else {
-        const cat = document.querySelector('.closet-tab.active')?.getAttribute('data-category') || 'all';
-        renderMarket(cat);
+        renderMarket(currentMarketCategory);
       }
     });
   });
@@ -289,38 +296,50 @@ function setupEventListeners() {
       closetTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const cat = tab.getAttribute('data-category');
-      renderCloset(cat);
-      renderMarket(cat);
+
+      const activeSubtab = document.querySelector('.shop-nav-item.active')?.getAttribute('data-subtab');
+      if (activeSubtab === 'closet') {
+        currentClosetCategory = cat;
+        renderCloset(cat);
+      } else {
+        currentMarketCategory = cat;
+        renderMarket(cat);
+      }
     });
   });
 
-  // Swipe support for Shop/Closet
-  let shopTouchStartX = 0;
-  let shopTouchStartY = 0;
-  const shopTabContent = document.getElementById('tab-shop');
-  if (shopTabContent) {
-    shopTabContent.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) {
-        shopTouchStartX = e.touches[0].clientX;
-        shopTouchStartY = e.touches[0].clientY;
+  // PC Mouse drag & mouse wheel horizontal scrolling for category tabs
+  const categoryTabsContainer = document.getElementById('shopCategoryTabs');
+  if (categoryTabsContainer) {
+    let isMouseDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    categoryTabsContainer.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      startX = e.pageX - categoryTabsContainer.offsetLeft;
+      scrollLeft = categoryTabsContainer.scrollLeft;
+    });
+    categoryTabsContainer.addEventListener('mouseleave', () => {
+      isMouseDown = false;
+    });
+    categoryTabsContainer.addEventListener('mouseup', () => {
+      isMouseDown = false;
+    });
+    categoryTabsContainer.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      e.preventDefault();
+      const x = e.pageX - categoryTabsContainer.offsetLeft;
+      const walk = (x - startX) * 2;
+      categoryTabsContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    categoryTabsContainer.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        categoryTabsContainer.scrollLeft += e.deltaY;
       }
-    }, { passive: true });
-    shopTabContent.addEventListener('touchend', e => {
-      if (e.changedTouches.length === 1) {
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-        const diffX = touchEndX - shopTouchStartX;
-        const diffY = touchEndY - shopTouchStartY;
-        // Only trigger if horizontal movement is dominant and > 45px
-        if (Math.abs(diffX) > Math.abs(diffY) * 1.5 && Math.abs(diffX) > 45) {
-          if (diffX < 0) {
-            document.querySelector('.shop-nav-item[data-subtab="closet"]')?.click();
-          } else {
-            document.querySelector('.shop-nav-item[data-subtab="market"]')?.click();
-          }
-        }
-      }
-    }, { passive: true });
+    }, { passive: false });
   }
 
   // Quick routine add button
@@ -342,6 +361,7 @@ function setupEventListeners() {
   document.getElementById('customRoutineRepeat').addEventListener('change', event => {
     document.getElementById('customWeekdayPicker').hidden = event.target.value !== 'custom';
   });
+  document.getElementById('mainMenuBtn')?.addEventListener('click', openAuthModal);
   document.getElementById('syncStatus').addEventListener('click', openAuthModal);
   document.getElementById('authCloseBtn').addEventListener('click', closeAuthModal);
   document.getElementById('authModal').addEventListener('click', event => {
@@ -482,16 +502,15 @@ function updateSyncStatus(state) {
   if (!status || !text) return;
   const resolvedState = navigator.onLine ? state : 'offline';
   status.className = `sync-status ${resolvedState}`;
+  const userText = currentAuthUser
+    ? `👤 ${currentAuthUser.email} 님`
+    : '게스트 모드 · 로그인 / 회원가입';
   const labels = {
-    local: currentAuthUser
-      ? `로컬 계정 · ${currentAuthUser.email}`
-      : localStorage.getItem(AUTH_CHOICE_STORAGE_KEY) === 'guest'
-        ? '게스트 모드 · 이 기기에 저장됨'
-        : '이 기기에 저장됨 · 로그인 가능',
-    cloud: '클라우드 연결됨',
-    syncing: '클라우드에 저장 중…',
-    synced: '클라우드 백업 완료',
-    offline: '오프라인 · 이 기기에 안전하게 저장됨'
+    local: userText,
+    cloud: `👤 ${currentAuthUser?.email || '사용자'} 님 (클라우드)`,
+    syncing: '클라우드 동기화 중…',
+    synced: currentAuthUser ? `👤 ${currentAuthUser.email} 님 (동기화 완료)` : '클라우드 백업 완료',
+    offline: '오프라인 (이 기기에 저장됨)'
   };
   text.textContent = labels[resolvedState] || labels.local;
 }

@@ -28,7 +28,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="runtime-config.js"></script>
   
-  <link rel="stylesheet" href="style.css?v=27">
+  <link rel="stylesheet" href="style.css?v=28">
 </head>
 
 <body>
@@ -60,9 +60,16 @@
           <input type="date" id="datePicker" class="date-input" aria-label="조회 날짜">
         </div>
         <button id="nextDateBtn" class="nav-date-btn" aria-label="다음 날짜"><i data-lucide="chevron-right"></i></button>
+        <button id="mainMenuBtn" class="nav-menu-btn" aria-label="메뉴 및 계정" title="메뉴 (로그인/회원가입)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
       <div class="date-mode-banner" id="dateModeBanner" aria-live="polite"></div>
-      <div class="sync-status" id="syncStatus" aria-live="polite">
+      <div class="sync-status" id="syncStatus" aria-live="polite" style="cursor: pointer;" title="클릭하여 로그인 또는 계정 설정">
         <span class="sync-status-dot"></span>
         <span id="syncStatusText">이 기기에 저장됨</span>
       </div>

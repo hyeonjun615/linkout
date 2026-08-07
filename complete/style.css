@@ -242,9 +242,23 @@ body {
 }
 
 .nav-menu-btn {
-  margin-left: 6px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.nav-menu-btn:hover {
+  opacity: 0.75;
 }
 
 .nav-date-btn:active,

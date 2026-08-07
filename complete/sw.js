@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lockin-gatsaeng-v28';
+const CACHE_NAME = 'lockin-gatsaeng-v29';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

@@ -362,7 +362,7 @@ function setupEventListeners() {
     document.getElementById('customWeekdayPicker').hidden = event.target.value !== 'custom';
   });
   document.getElementById('mainMenuBtn')?.addEventListener('click', openAuthModal);
-  document.getElementById('syncStatus').addEventListener('click', openAuthModal);
+  document.getElementById('syncStatus')?.addEventListener('click', openAuthModal);
   document.getElementById('authCloseBtn').addEventListener('click', closeAuthModal);
   document.getElementById('authModal').addEventListener('click', event => {
     if (event.target.id === 'authModal') closeAuthModal();

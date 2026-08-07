@@ -559,14 +559,6 @@ class GodsaengStore {
     return localStorage.getItem(this.titleKey) || 'beginner';
   }
 
-  // Gacha System
-  async playLuckyBox() {
-    const cost = 2;
-    const balance = await this.getCoins();
-    if (balance < cost) {
-      return { success: false, message: '뽑기에는 2코인이 필요합니다!' };
-    }
-
   // Reset all local storage data to initial state
   async resetData() {
     localStorage.removeItem(this.purchasedKey);

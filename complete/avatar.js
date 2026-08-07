@@ -112,16 +112,18 @@ class AvatarRenderer {
             <stop offset="100%" stop-color="#46120a" />
           </linearGradient>
           <linearGradient id="goggle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00f2fe" />
-            <stop offset="100%" stop-color="#ff007f" />
+            <stop offset="0%" stop-color="#ff007f" />
+            <stop offset="50%" stop-color="#7f00ff" />
+            <stop offset="100%" stop-color="#00f2fe" />
           </linearGradient>
           <radialGradient id="fire-glow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="rgba(159, 232, 112, 0.5)" />
             <stop offset="100%" stop-color="rgba(159, 232, 112, 0)" />
           </radialGradient>
           <linearGradient id="wood-plank" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="${woodStop1}" />
-            <stop offset="100%" stop-color="${woodStop2}" />
+            <stop offset="0%" stop-color="#2c1a0e" />
+            <stop offset="50%" stop-color="#1e1108" />
+            <stop offset="100%" stop-color="#140a04" />
           </linearGradient>
           <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -137,34 +139,20 @@ class AvatarRenderer {
           </filter>
           ${skinRgb ? `
           <filter id="skin-tint" x="-15%" y="-15%" width="130%" height="130%">
-            <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0
-                                                 0.2126 0.7152 0.0722 0 0
-                                                 0.2126 0.7152 0.0722 0 0
-                                                 0      0      0      1 0" result="gray" />
             <feColorMatrix type="matrix" values="${skinRgb[0]} 0 0 0 0
                                                  0 ${skinRgb[1]} 0 0 0
                                                  0 0 ${skinRgb[2]} 0 0
-                                                 0 0 0 1 0" in="gray" result="tinted" />
-            <feBlend mode="color" in="tinted" in2="SourceGraphic" result="blended" />
+                                                 0 0 0 1 0" result="tinted" />
             <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
           </filter>
           ` : ''}
         </defs>
 
-        <!-- 0. Wood Cabin Room Background (Lock-in/Wise Theme Cabin) -->
         <rect x="0" y="0" width="200" height="200" fill="url(#wood-plank)" />
-        
-        <!-- Plank joints -->
         <line x1="0" y1="30" x2="200" y2="30" stroke="${floorStroke}" stroke-width="1.5" opacity="0.8" />
         <line x1="0" y1="60" x2="200" y2="60" stroke="${floorStroke}" stroke-width="1.5" opacity="0.8" />
         <line x1="0" y1="90" x2="200" y2="90" stroke="${floorStroke}" stroke-width="1.5" opacity="0.8" />
         <line x1="0" y1="120" x2="200" y2="120" stroke="${floorStroke}" stroke-width="1.5" opacity="0.8" />
-        <line x1="0" y1="150" x2="200" y2="150" stroke="${floorStroke}" stroke-width="1.5" opacity="0.8" />
-        
-        <!-- Cabin Window (circular) showing night sky -->
-        <circle cx="150" cy="55" r="24" fill="#0f172a" stroke="${windowFrame}" stroke-width="3" />
-        <circle cx="146" cy="46" r="3" fill="#fef08a" opacity="0.9" />
-        <circle cx="162" cy="62" r="1.5" fill="#ffffff" opacity="0.7" />
         <circle cx="138" cy="60" r="1.5" fill="#ffffff" opacity="0.6" />
         
         <!-- Window panes cross -->
@@ -239,11 +227,7 @@ class AvatarRenderer {
     svgContent += `
       <g id="character-body">
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="url(#character-pop)" />
-        ${skinRgb ? `
-        <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint)" opacity="0.65" style="mix-blend-mode: color;" />
-        ` : ''}
+          preserveAspectRatio="xMidYMid meet" filter="${skinRgb ? 'url(#skin-tint)' : 'url(#character-pop)'}" />
       </g>
     `;
 

@@ -2527,26 +2527,21 @@ input:focus-visible {
   margin-bottom: 15px;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
 }
-.gacha-item-name {
-  color: white;
-  font-size: 24px;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  margin-bottom: 8px;
-}
-.gacha-item-desc {
-  color: rgba(255,255,255,0.8);
-  font-size: 14px;
-  margin-bottom: 30px;
-}
-.gacha-close-btn, .prob-info-btn {
-  background: var(--accent-yellow);
-  color: #000;
+.gacha-close-btn {
+  background: var(--primary-color, #2563eb);
+  color: #ffffff;
   border: none;
-  padding: 10px 24px;
-  border-radius: 20px;
-  font-weight: bold;
+  padding: 10px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+.gacha-close-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 .prob-info-btn {
   background: #fff;

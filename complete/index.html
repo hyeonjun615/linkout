@@ -28,7 +28,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="runtime-config.js"></script>
   
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 
 <body>
@@ -227,20 +227,24 @@
         </div>
 
         <!-- Subtabs inside shop: Inventory / Market -->
-        <div class="shop-nav">
-          <button class="shop-nav-item active" data-subtab="market">코인 상점</button>
-          <button class="shop-nav-item" data-subtab="closet">내 옷장 (OOTD)</button>
+        <!-- Sticky Header for Shop (Nav + Categories) -->
+        <div class="shop-sticky-header">
+          <div class="shop-nav">
+            <button class="shop-nav-item active" data-subtab="market">코인 상점</button>
+            <button class="shop-nav-item" data-subtab="closet">내 옷장 (OOTD)</button>
+          </div>
+
+          <!-- Shared Category Tabs for both Market and Closet -->
+          <div class="closet-category-tabs" id="shopCategoryTabs">
+            <button class="closet-tab active" data-category="all">전체</button>
+            <button class="closet-tab" data-category="top">스킨(상의)</button>
+            <button class="closet-tab" data-category="bottom">하의</button>
+            <button class="closet-tab" data-category="accessory">장신구</button>
+            <button class="closet-tab" data-category="background">배경</button>
+            <button class="closet-tab" data-category="title">칭호</button>
+          </div>
         </div>
 
-        <!-- Shared Category Tabs for both Market and Closet -->
-        <div class="closet-category-tabs" id="shopCategoryTabs">
-          <button class="closet-tab active" data-category="all">전체</button>
-          <button class="closet-tab" data-category="top">스킨(상의)</button>
-          <button class="closet-tab" data-category="bottom">하의</button>
-          <button class="closet-tab" data-category="accessory">장신구</button>
-          <button class="closet-tab" data-category="background">배경</button>
-          <button class="closet-tab" data-category="title">칭호</button>
-        </div>
 
         <!-- Subtab contents -->
         <div class="shop-subcontent-panel active" id="subtab-market">

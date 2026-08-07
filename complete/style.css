@@ -1440,11 +1440,26 @@ input:focus-visible {
   transform: scale(0.95);
 }
 
+/* Sticky Header for Shop (Nav + Categories) */
+.shop-sticky-header {
+  position: sticky;
+  top: -16px; /* offset the tab-content padding */
+  background: var(--bg-app);
+  z-index: 20;
+  margin-top: -16px;
+  padding-top: 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-bottom: 16px;
+}
+
 /* Subtab switcher inside Shop */
 .shop-nav {
   display: flex;
   border-bottom: 1.5px solid var(--border-color);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .shop-nav-item {
@@ -2153,9 +2168,9 @@ input:focus-visible {
   transition: all 0.2s;
 }
 .closet-tab.active {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
+  background: var(--border-color);
+  color: var(--text-main);
+  border-color: var(--text-muted);
 }
 
 /* ==========================================================================

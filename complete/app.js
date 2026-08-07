@@ -1729,12 +1729,9 @@ async function triggerLuckyBox() {
 
       // Update store UI
       window.godsaengStore.getCoins().then(c => document.getElementById('coinCount').textContent = c);
-      if (document.getElementById('subtab-closet').classList.contains('active')) {
-        renderCloset();
-      } else {
-        renderMarket();
-      }
-      updateAvatarDisplay();
+      await renderMarket();
+      await renderCloset();
+      await updateAvatarDisplay();
     }, 400);
   }, totalOpenDelay);
 }

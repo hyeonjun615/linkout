@@ -83,7 +83,11 @@ class GodsaengStore {
       'sweatband': '8dfd1620-af58-43dc-8a27-56dee912b68f',
       'glasses': '0ded4f4e-28cd-457a-93a9-e51971e4607c',
       'dumbbell_iron': '2c330ccc-1046-40ad-8709-adfc0c316c00',
+      'dumbbell_purple': '59c34d67-3456-6789-abcd-ef0123456789',
+      'dumbbell_gold': '60d45e78-4567-789a-bcde-f01234567890',
       'iced_coffee_black': '89e28a78-f33a-4d05-a63e-cd063ebc0848',
+      'iced_coffee_pink': '37a12b45-1234-4567-89ab-cdef01234567',
+      'iced_coffee_galaxy': '48b23c56-2345-5678-9abc-def012345678',
       'airpods_silver': 'f5af0cd7-d443-40a2-b082-2fa1c66e2919',
       'airpods_green': '8ed89030-4646-43aa-be87-82b2b29d0a5c',
       'airpods_rainbow': '21d673ad-7315-4f3c-8606-e9bf9ed8c925',
@@ -240,6 +244,14 @@ class GodsaengStore {
     return true;
   }
 
+  getItemUuid(itemId) {
+    if (this.dbItemMapping[itemId]) return this.dbItemMapping[itemId];
+    const val = `90000000-0000-4000-8000-${itemId.replace(/[^a-z0-9]/gi, '').padEnd(12, '0').slice(0, 12)}`;
+    this.dbItemMapping[itemId] = val;
+    this.localItemMapping[val] = itemId;
+    return val;
+  }
+
   // Inventory Management
   async addPurchasedItem(itemId) {
     const list = await this.getPurchasedItems();
@@ -250,7 +262,7 @@ class GodsaengStore {
 
     if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
       try {
-        const uuid = this.dbItemMapping[itemId];
+        const uuid = this.getItemUuid(itemId);
         if (uuid) {
           await this.supabaseClient
             .from('user_items')

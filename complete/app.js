@@ -1422,10 +1422,7 @@ async function renderMarket(category = 'all') {
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
-          <span class="shop-prob-badge">뽑기 ${storeChancePerItem}%</span>
-        </div>
+        <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
       </div>
@@ -1509,10 +1506,7 @@ async function renderCloset(category = 'all') {
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
-          <span class="shop-prob-badge owned">0.0% (소유함)</span>
-        </div>
+        <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
       </div>

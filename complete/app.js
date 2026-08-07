@@ -1658,31 +1658,34 @@ async function triggerLuckyBox() {
   closetAura.className = 'closet-aura step-common';
   triggerImpactShake();
 
-  // Step 2: If target >= Rare, upgrade aura to Blue + IMPACT SHAKE at 700ms (딸깍!)
-  setTimeout(() => {
-    if (targetStep >= 2) {
+  const STEP_INTERVAL = 600;
+
+  // Step 2: If target >= Rare, upgrade aura to Blue + IMPACT SHAKE
+  if (targetStep >= 2) {
+    setTimeout(() => {
       closetAura.className = 'closet-aura step-rare';
       triggerImpactShake();
-    }
-  }, 700);
+    }, STEP_INTERVAL);
+  }
 
-  // Step 3: If target >= Epic, upgrade aura to Purple + IMPACT SHAKE at 1400ms (딸깍!)
-  setTimeout(() => {
-    if (targetStep >= 3) {
+  // Step 3: If target >= Epic, upgrade aura to Purple + IMPACT SHAKE
+  if (targetStep >= 3) {
+    setTimeout(() => {
       closetAura.className = 'closet-aura step-epic';
       triggerImpactShake();
-    }
-  }, 1400);
+    }, STEP_INTERVAL * 2);
+  }
 
-  // Step 4: If target == Legendary, upgrade aura to Gold + IMPACT SHAKE at 2100ms (딸깍!)
-  setTimeout(() => {
-    if (targetStep >= 4) {
+  // Step 4: If target == Legendary, upgrade aura to Gold + IMPACT SHAKE
+  if (targetStep >= 4) {
+    setTimeout(() => {
       closetAura.className = 'closet-aura step-legendary';
       triggerImpactShake();
-    }
-  }, 2100);
+    }, STEP_INTERVAL * 3);
+  }
 
-  // Step 5: Door Burst Open & Result Reveal (at 2700ms)
+  // Step 5: Door Burst Open & Result Reveal dynamically based on targetStep
+  const totalOpenDelay = targetStep * STEP_INTERVAL;
   setTimeout(() => {
     closetWardrobe.classList.remove('grade-bump');
     closetWardrobe.classList.add('open');
@@ -1705,7 +1708,7 @@ async function triggerLuckyBox() {
       }
       updateAvatarDisplay();
     }, 400);
-  }, 2700);
+  }, totalOpenDelay);
 }
 
 // ==========================================================================

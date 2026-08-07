@@ -1419,19 +1419,12 @@ async function renderMarket(category = 'all') {
   const grid = document.getElementById('marketGrid');
   if (!grid || !document.getElementById('subtab-market').classList.contains('active')) return;
 
-  // Active category tab fallback
-  const activeTab = document.querySelector('.closet-tab.active');
-  if (activeTab && category === 'all') {
-    category = activeTab.getAttribute('data-category') || 'all';
-  }
-
   grid.innerHTML = '';
   const purchased = await window.godsaengStore.getPurchasedItems();
 
   const catalogs = window.godsaengStore.itemsCatalog;
   const storeItems = Object.keys(catalogs);
   const unownedStore = storeItems.filter(id => !purchased.includes(id));
-  const storeChancePerItem = unownedStore.length > 0 ? (35.0 / unownedStore.length).toFixed(1) : '0.0';
 
   // 등급 우선순위 정렬 (Special > Point > Basic)
   const gradeOrder = { 'Special': 3, 'Point': 2, 'Basic': 1 };
@@ -1491,12 +1484,6 @@ async function renderCloset(category = 'all') {
   const grid = document.getElementById('closetGrid');
   if (!grid) return;
 
-  // Active category tab fallback
-  const activeTab = document.querySelector('.closet-tab.active');
-  if (activeTab && category === 'all') {
-    category = activeTab.getAttribute('data-category') || 'all';
-  }
-
   grid.innerHTML = '';
   const purchased = await window.godsaengStore.getPurchasedItems();
   const equipped = await window.godsaengStore.getEquippedItems();
@@ -1517,6 +1504,8 @@ async function renderCloset(category = 'all') {
       return gB - gA;
     });
 
+  let displayedCount = 0;
+
   for (const [id, item] of sortedOwnedItems) {
     // Determine category
     let itemCategory = 'accessory';
@@ -1530,6 +1519,7 @@ async function renderCloset(category = 'all') {
 
     if (category !== 'all' && itemCategory !== category) continue;
 
+    displayedCount++;
     const isEquipped = equipped.includes(id) || (id === 'default' && !equipped.includes('green') && !equipped.includes('purple') && !equipped.includes('blue') && !equipped.includes('gold'));
     const isEquippedTitle = equipped.includes(id);
     const isRoom = id.startsWith('room_');
@@ -1560,6 +1550,15 @@ async function renderCloset(category = 'all') {
       </div>
     `;
     grid.appendChild(card);
+  }
+
+  // 옷장이 비어있거나 특정 카테고리 아이템이 없을 때 안내 문구
+  if (grid.innerHTML === '') {
+    if (displayedCount === 0 && category !== 'all') {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">해당 카테고리에 보유 중인 아이템이 없습니다.</div>';
+    } else {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">보유 중인 아이템이 없습니다. 뽑기나 상점에서 얻어보세요!</div>';
+    }
   }
 }
 

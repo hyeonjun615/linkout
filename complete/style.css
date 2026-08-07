@@ -162,7 +162,6 @@ body {
   transform: translateY(-100%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  display: none !important;
 }
 
 .splash-title-box {

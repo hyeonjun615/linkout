@@ -442,11 +442,16 @@ function setupEventListeners() {
   document.getElementById('probCloseBtn')?.addEventListener('click', () => {
     document.getElementById('probModal').classList.remove('show');
   });
-  document.getElementById('gachaCloseBtn')?.addEventListener('click', () => {
+  document.getElementById('gachaCloseBtn')?.addEventListener('click', async () => {
     document.getElementById('gachaModal').classList.remove('show');
     const gachaBox = document.getElementById('gachaBox');
-    gachaBox.textContent = '🚪';
-    gachaBox.style.opacity = '1';
+    if (gachaBox) {
+      gachaBox.textContent = '🚪';
+      gachaBox.style.opacity = '1';
+    }
+    await renderMarket();
+    await renderCloset();
+    await updateAvatarDisplay();
   });
 
   // Camera closing and webcam switches

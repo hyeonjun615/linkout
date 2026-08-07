@@ -1609,55 +1609,74 @@ async function triggerLuckyBox() {
     return;
   }
 
-  // Determine rarity from item grade
-  let rarityClass = 'rarity-common';
-  let rarityColor = '#FFFFFF';
-  const item = result.itemId ? (window.godsaengStore.itemsCatalog[result.itemId] || window.godsaengStore.gachaCatalog[result.itemId]) : null;
-  
-  if (result.type === 'exclusive') { rarityClass = 'rarity-legendary'; rarityColor = '#FFD700'; }
-  else if (item && item.cost >= 8) { rarityClass = 'rarity-epic'; rarityColor = '#A020F0'; }
-  else if (item && item.cost >= 5) { rarityClass = 'rarity-rare'; rarityColor = '#1E90FF'; }
-  else if (item && item.cost >= 3) { rarityClass = 'rarity-uncommon'; rarityColor = '#32CD32'; }
-  else { rarityClass = 'rarity-common'; rarityColor = '#FFFFFF'; }
+  // Pre-determined Target Grade
+  const targetGrade = result.grade || 'Common';
+  let targetStep = 1;
+  let finalColor = '#6b7280'; // Common Gray
+  if (targetGrade === 'Legendary') { targetStep = 4; finalColor = '#f59e0b'; }
+  else if (targetGrade === 'Epic') { targetStep = 3; finalColor = '#7c3aed'; }
+  else if (targetGrade === 'Rare') { targetStep = 2; finalColor = '#2563eb'; }
 
-  // Update Modal UI
+  // UI Elements
   const gachaModal = document.getElementById('gachaModal');
-  const gachaBox = document.getElementById('gachaBox');
+  const closetWardrobe = document.getElementById('closetWardrobe');
+  const closetAura = document.getElementById('closetAura');
   const gachaLight = document.getElementById('gachaLight');
   const gachaResult = document.getElementById('gachaResult');
   const icon = document.getElementById('gachaItemIcon');
   const name = document.getElementById('gachaItemName');
   const desc = document.getElementById('gachaItemDesc');
 
-  // Reset animations
-  gachaBox.classList.remove('shake');
+  // Reset initial modal state
+  if (closetWardrobe) closetWardrobe.className = 'closet-wardrobe';
+  if (closetAura) closetAura.className = 'closet-aura';
   gachaLight.classList.remove('glowing-burst');
   gachaResult.classList.remove('float-up');
   gachaModal.classList.add('show');
-  gachaLight.style.color = rarityColor;
-  
+  gachaLight.style.color = finalColor;
+
   icon.textContent = '';
-  name.textContent = '뽑는 중...';
+  name.textContent = '';
   name.className = 'gacha-item-name';
   desc.textContent = '';
-  gachaBox.textContent = 'OPEN';
-  gachaBox.style.opacity = '1';
 
-  // 1. Shake animation
-  gachaBox.classList.add('shake');
+  // Step 1: Initial Rattle + Common White/Gray Aura
+  closetWardrobe.classList.add('shake-soft');
+  closetAura.className = 'closet-aura step-common';
 
+  // Step 2: If target >= Rare, upgrade aura to Blue at 600ms (딸깍!)
   setTimeout(() => {
-    // 2. Open door & glow
-    gachaBox.classList.remove('shake');
-    gachaBox.textContent = 'EFFECT'; 
+    if (targetStep >= 2) {
+      closetAura.className = 'closet-aura step-rare';
+      closetWardrobe.classList.remove('shake-soft');
+      closetWardrobe.classList.add('shake-hard');
+    }
+  }, 600);
+
+  // Step 3: If target >= Epic, upgrade aura to Purple at 1200ms (딸깍!)
+  setTimeout(() => {
+    if (targetStep >= 3) {
+      closetAura.className = 'closet-aura step-epic';
+    }
+  }, 1200);
+
+  // Step 4: If target == Legendary, upgrade aura to Explosive Gold at 1800ms (딸깍!)
+  setTimeout(() => {
+    if (targetStep >= 4) {
+      closetAura.className = 'closet-aura step-legendary';
+    }
+  }, 1800);
+
+  // Step 5: Door Burst Open & Item Reveal (at 2300ms)
+  setTimeout(() => {
+    closetWardrobe.classList.remove('shake-soft', 'shake-hard');
+    closetWardrobe.classList.add('open');
     gachaLight.classList.add('glowing-burst');
-    
-    // 3. Show item
+
     setTimeout(() => {
-      gachaBox.style.opacity = '0';
-      icon.textContent = result.grade ? `[${result.grade}]` : '';
+      icon.textContent = `[${result.grade}]`;
       name.textContent = result.name || result.message;
-      name.classList.add(rarityClass);
+      name.classList.add(`rarity-${targetGrade.toLowerCase()}`);
       desc.textContent = result.message;
       gachaResult.classList.add('float-up');
 
@@ -1669,8 +1688,8 @@ async function triggerLuckyBox() {
         renderMarket();
       }
       updateAvatarDisplay();
-    }, 500);
-  }, 1500);
+    }, 400);
+  }, 2300);
 }
 
 // ==========================================================================

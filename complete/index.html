@@ -28,7 +28,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="runtime-config.js"></script>
   
-  <link rel="stylesheet" href="style.css?v=38">
+  <link rel="stylesheet" href="style.css?v=39">
 </head>
 
 <body>
@@ -442,8 +442,22 @@
     <!-- Gacha Animation Modal -->
     <div class="gacha-modal" id="gachaModal" aria-hidden="true">
       <div class="gacha-container">
-        <div class="gacha-box" id="gachaBox">🚪</div>
+        <!-- 3D Closet Wardrobe Door Container -->
+        <div class="closet-gacha-wrap" id="closetGachaWrap">
+          <div class="closet-aura" id="closetAura"></div>
+          <div class="closet-wardrobe" id="closetWardrobe">
+            <div class="wardrobe-door door-left" id="doorLeft">
+              <div class="door-handle"></div>
+            </div>
+            <div class="wardrobe-door door-right" id="doorRight">
+              <div class="door-handle"></div>
+            </div>
+            <div class="wardrobe-interior" id="wardrobeInterior"></div>
+          </div>
+        </div>
+
         <div class="gacha-light" id="gachaLight"></div>
+
         <div class="gacha-result" id="gachaResult">
           <div class="gacha-item-icon" id="gachaItemIcon"></div>
           <div class="gacha-item-name" id="gachaItemName"></div>

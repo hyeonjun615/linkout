@@ -1613,9 +1613,16 @@ async function triggerLuckyBox() {
   const targetGrade = result.grade || 'Common';
   let targetStep = 1;
   let finalColor = '#6b7280'; // Common Gray
-  if (targetGrade === 'Legendary') { targetStep = 4; finalColor = '#f59e0b'; }
-  else if (targetGrade === 'Epic') { targetStep = 3; finalColor = '#7c3aed'; }
-  else if (targetGrade === 'Rare') { targetStep = 2; finalColor = '#2563eb'; }
+  let gradeText = '일반';
+  let gradeTagClass = 'tag-basic';
+
+  if (targetGrade === 'Legendary') {
+    targetStep = 4; finalColor = '#f59e0b'; gradeText = '전설'; gradeTagClass = 'tag-special';
+  } else if (targetGrade === 'Epic') {
+    targetStep = 3; finalColor = '#7c3aed'; gradeText = '영웅'; gradeTagClass = 'tag-epic';
+  } else if (targetGrade === 'Rare') {
+    targetStep = 2; finalColor = '#2563eb'; gradeText = '희귀'; gradeTagClass = 'tag-point';
+  }
 
   // UI Elements
   const gachaModal = document.getElementById('gachaModal');
@@ -1637,46 +1644,55 @@ async function triggerLuckyBox() {
 
   icon.textContent = '';
   name.textContent = '';
-  name.className = 'gacha-item-name';
   desc.textContent = '';
 
-  // Step 1: Initial Rattle + Common White/Gray Aura
-  closetWardrobe.classList.add('shake-soft');
-  closetAura.className = 'closet-aura step-common';
+  // Function to trigger door impact shake on grade upgrade
+  const triggerImpactShake = () => {
+    if (!closetWardrobe) return;
+    closetWardrobe.classList.remove('grade-bump');
+    void closetWardrobe.offsetWidth; // Force reflow
+    closetWardrobe.classList.add('grade-bump');
+  };
 
-  // Step 2: If target >= Rare, upgrade aura to Blue at 600ms (딸깍!)
+  // Step 1: Initial Rattle + Common White/Gray Aura
+  closetAura.className = 'closet-aura step-common';
+  triggerImpactShake();
+
+  // Step 2: If target >= Rare, upgrade aura to Blue + IMPACT SHAKE at 700ms (딸깍!)
   setTimeout(() => {
     if (targetStep >= 2) {
       closetAura.className = 'closet-aura step-rare';
-      closetWardrobe.classList.remove('shake-soft');
-      closetWardrobe.classList.add('shake-hard');
+      triggerImpactShake();
     }
-  }, 600);
+  }, 700);
 
-  // Step 3: If target >= Epic, upgrade aura to Purple at 1200ms (딸깍!)
+  // Step 3: If target >= Epic, upgrade aura to Purple + IMPACT SHAKE at 1400ms (딸깍!)
   setTimeout(() => {
     if (targetStep >= 3) {
       closetAura.className = 'closet-aura step-epic';
+      triggerImpactShake();
     }
-  }, 1200);
+  }, 1400);
 
-  // Step 4: If target == Legendary, upgrade aura to Explosive Gold at 1800ms (딸깍!)
+  // Step 4: If target == Legendary, upgrade aura to Gold + IMPACT SHAKE at 2100ms (딸깍!)
   setTimeout(() => {
     if (targetStep >= 4) {
       closetAura.className = 'closet-aura step-legendary';
+      triggerImpactShake();
     }
-  }, 1800);
+  }, 2100);
 
-  // Step 5: Door Burst Open & Item Reveal (at 2300ms)
+  // Step 5: Door Burst Open & Result Reveal (at 2700ms)
   setTimeout(() => {
-    closetWardrobe.classList.remove('shake-soft', 'shake-hard');
+    closetWardrobe.classList.remove('grade-bump');
     closetWardrobe.classList.add('open');
     gachaLight.classList.add('glowing-burst');
 
     setTimeout(() => {
-      icon.textContent = `[${result.grade}]`;
+      // Sleek Grade Badge Pill & Result Card
+      icon.textContent = gradeText;
+      icon.className = `gacha-item-icon ${gradeTagClass}`;
       name.textContent = result.name || result.message;
-      name.classList.add(`rarity-${targetGrade.toLowerCase()}`);
       desc.textContent = result.message;
       gachaResult.classList.add('float-up');
 
@@ -1689,7 +1705,7 @@ async function triggerLuckyBox() {
       }
       updateAvatarDisplay();
     }, 400);
-  }, 2300);
+  }, 2700);
 }
 
 // ==========================================================================

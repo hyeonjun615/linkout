@@ -1587,42 +1587,36 @@ async function renderProbabilityModal() {
 
   const purchased = await window.godsaengStore.getPurchasedItems();
 
-  // 1. Exclusive items pool (40% total chance)
+  // 1. Exclusive items pool (40% total chance) - Highest Grade (Top)
   const exclusives = Object.keys(window.godsaengStore.gachaCatalog);
   const unownedExcl = exclusives.filter(id => !purchased.includes(id));
+  const exclItemChance = unownedExcl.length > 0 ? (40.0 / unownedExcl.length).toFixed(1) : '0.0';
 
-  // 2. Store items pool (40% total chance)
+  // 2. Store items pool (35% total chance) - Mid Grade
   const storeItems = Object.keys(window.godsaengStore.itemsCatalog);
   const unownedStore = storeItems.filter(id => !purchased.includes(id));
-  const storeChancePerItem = unownedStore.length > 0 ? (40 / unownedStore.length).toFixed(1) : 0;
-  
-  // Chance of NOT getting a specific target item = 100% - (chance of getting that item)
-  const targetMissRate = unownedStore.length > 0 ? (100 - parseFloat(storeChancePerItem)).toFixed(1) : '100';
+  const storeItemChance = unownedStore.length > 0 ? (35.0 / unownedStore.length).toFixed(1) : '0.0';
 
   tbody.innerHTML = `
-    <tr class="grade-rare">
-      <td><strong>🛒 신규 상점 템</strong></td>
-      <td class="text-right">
-        ${unownedStore.length > 0 
-          ? `<strong>개당 ${storeChancePerItem}%</strong> <span class="prob-sub-text">(${unownedStore.length}개 남음 / 총 40%)</span>` 
-          : `<span class="all-collected-badge">👑 수집 완료 (2코인 환급)</span>`}
-      </td>
-    </tr>
     <tr class="grade-legendary">
-      <td><strong>🎁 럭키 전용 템</strong></td>
+      <td><strong>전용 아이템 (최고 등급)</strong></td>
       <td class="text-right">
         ${unownedExcl.length > 0 
-          ? `<strong>개당 ${(40/unownedExcl.length).toFixed(1)}%</strong> <span class="prob-sub-text">(${unownedExcl.length}개 남음)</span>` 
-          : `<span class="all-collected-badge">👑 수집 완료 (40%로 2코인 환급)</span>`}
+          ? `<strong>개당 ${exclItemChance}%</strong> <span class="prob-sub-text">(미획득 ${unownedExcl.length}개 / 총 40.0%)</span>` 
+          : `<span class="all-collected-badge">0.0% (수집 완료 / 40.0% 환급)</span>`}
+      </td>
+    </tr>
+    <tr class="grade-rare">
+      <td><strong>상점 아이템 (일반 등급)</strong></td>
+      <td class="text-right">
+        ${unownedStore.length > 0 
+          ? `<strong>개당 ${storeItemChance}%</strong> <span class="prob-sub-text">(미획득 ${unownedStore.length}개 / 총 35.0%)</span>` 
+          : `<span class="all-collected-badge">0.0% (수집 완료 / 35.0% 환급)</span>`}
       </td>
     </tr>
     <tr class="grade-common">
-      <td><strong>💸 꽝 (위로금)</strong></td>
-      <td class="text-right"><strong>20%</strong> <span class="prob-sub-text">(1코인 환급)</span></td>
-    </tr>
-    <tr style="border-top: 1.5px dashed var(--border-color); background: var(--bg-app);">
-      <td><strong>🎯 특정 템 안 나올 확률</strong></td>
-      <td class="text-right"><strong style="color: #b13c3c;">${targetMissRate}%</strong> <span class="prob-sub-text">(특정 목표템 실패율)</span></td>
+      <td><strong>꽝 (위로금 1코인)</strong></td>
+      <td class="text-right"><strong>25.0%</strong> <span class="prob-sub-text">(무제한)</span></td>
     </tr>
   `;
 }

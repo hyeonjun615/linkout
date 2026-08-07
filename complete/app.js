@@ -1734,7 +1734,7 @@ async function triggerLuckyBox() {
     closetWardrobe.classList.add('open');
     gachaLight.classList.add('glowing-burst');
 
-    setTimeout(() => {
+    setTimeout(async () => {
       // Sleek Grade Badge Pill & Result Card
       icon.textContent = gradeText;
       icon.className = `gacha-item-icon ${gradeTagClass}`;

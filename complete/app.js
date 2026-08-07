@@ -92,7 +92,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     console.error("앱 초기화 중 오류 발생 (안전 모드로 전환):", err);
   } finally {
-    scheduleDismissSplash();
+    dismissSplash();
     positionTabIndicator();
     window.addEventListener('resize', positionTabIndicator);
     if (typeof lucide !== 'undefined') lucide.createIcons();

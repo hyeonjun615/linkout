@@ -18,47 +18,47 @@ class GodsaengStore {
     // Local Items Catalog definition (matching avatar.js assets)
     this.itemsCatalog = {
       // Accessories
-      'iced_coffee_black': { id: 'iced_coffee_black', name: '갓생 아아 (블랙) ☕', cost: 1, grade: 'Basic', desc: '생존용 아이스 아메리카노 수혈.' },
-      'iced_coffee_pink': { id: 'iced_coffee_pink', name: '딸기 라떼 🍓☕', cost: 3, grade: 'Point', desc: '달달하고 예쁜 딸기 핑크 라떼.' },
-      'iced_coffee_galaxy': { id: 'iced_coffee_galaxy', name: '갤럭시 라떼 🌌☕', cost: 5, grade: 'Special', desc: '그라데이션 네온 우주빛 라떼.' },
+      'iced_coffee_black': { id: 'iced_coffee_black', name: '아이스 아메리카노 (블랙)', cost: 1, grade: 'Basic', desc: '생존용 아이스 아메리카노 수혈.' },
+      'iced_coffee_pink': { id: 'iced_coffee_pink', name: '딸기 라떼', cost: 3, grade: 'Point', desc: '달달하고 예쁜 딸기 핑크 라떼.' },
+      'iced_coffee_galaxy': { id: 'iced_coffee_galaxy', name: '갤럭시 라떼', cost: 5, grade: 'Special', desc: '그라데이션 네온 우주빛 라떼.' },
 
-      'dumbbell_iron': { id: 'dumbbell_iron', name: '득근 아령 (블랙) 🏋️', cost: 1, grade: 'Basic', desc: '근손실 방지 기본 쇠질용 덤벨.' },
-      'dumbbell_purple': { id: 'dumbbell_purple', name: '득근 아령 (퍼플) 🏋️', cost: 3, grade: 'Point', desc: '화려한 펄이 들어간 네온 퍼플 덤벨.' },
-      'dumbbell_gold': { id: 'dumbbell_gold', name: '불타는 황금 아령 🔥🏋️', cost: 5, grade: 'Special', desc: '황금 파이어 오라가 피어오르는 아령.' },
+      'dumbbell_iron': { id: 'dumbbell_iron', name: '득근 아령 (블랙)', cost: 1, grade: 'Basic', desc: '근손실 방지 기본 쇠질용 덤벨.' },
+      'dumbbell_purple': { id: 'dumbbell_purple', name: '득근 아령 (퍼플)', cost: 3, grade: 'Point', desc: '화려한 펄이 들어간 네온 퍼플 덤벨.' },
+      'dumbbell_gold': { id: 'dumbbell_gold', name: '불타는 황금 아령', cost: 5, grade: 'Special', desc: '황금 파이어 오라가 피어오르는 아령.' },
 
-      'airpods_silver': { id: 'airpods_silver', name: '에어팟 맥스 (실버) 🎧', cost: 1, grade: 'Basic', desc: '노이즈 캔슬링 기본 실버 헤드셋.' },
-      'airpods_green': { id: 'airpods_green', name: '에어팟 맥스 (그린) 🎧', cost: 3, grade: 'Point', desc: '상큼한 네온 파스텔 그린 헤드셋.' },
-      'airpods_rainbow': { id: 'airpods_rainbow', name: '네온 무지개 에어팟 🌈🎧', cost: 8, grade: 'Special', desc: '무지개빛 글로우 에어팟 맥스.' },
+      'airpods_silver': { id: 'airpods_silver', name: '에어팟 맥스 (실버)', cost: 1, grade: 'Basic', desc: '노이즈 캔슬링 기본 실버 헤드셋.' },
+      'airpods_green': { id: 'airpods_green', name: '에어팟 맥스 (그린)', cost: 3, grade: 'Point', desc: '상큼한 네온 파스텔 그린 헤드셋.' },
+      'airpods_rainbow': { id: 'airpods_rainbow', name: '네온 무지개 에어팟', cost: 8, grade: 'Special', desc: '무지개빛 글로우 에어팟 맥스.' },
 
-      'sweatband': { id: 'sweatband', name: '땀 밴드 🔴', cost: 1, grade: 'Basic', desc: '갓생 운동러의 필수 땀 밴드.' },
-      'glasses': { id: 'glasses', name: '모던 안경 👓', cost: 1, grade: 'Basic', desc: '지성적인 갓생러를 위한 안경.' },
+      'sweatband': { id: 'sweatband', name: '땀 밴드', cost: 1, grade: 'Basic', desc: '운동러의 필수 땀 밴드.' },
+      'glasses': { id: 'glasses', name: '모던 안경', cost: 1, grade: 'Basic', desc: '지성적인 모습을 위한 안경.' },
 
       // Skins
-      'green': { id: 'green', name: '슈렉 그린 🟢', cost: 5, grade: 'Point', desc: '피부색을 화사한 슈렉 녹색으로 변경.' },
-      'purple': { id: 'purple', name: '에일리언 퍼플 🟣', cost: 5, grade: 'Point', desc: '신비롭고 힙한 외계인 보라색 피부.' },
-      'blue': { id: 'blue', name: '사이버 네온 블루 🔵', cost: 10, grade: 'Special', desc: '빛이 나는 형광 네온 블루 피부.' },
-      'gold': { id: 'gold', name: '황금 갓생 골드 🟡', cost: 15, grade: 'Special', desc: '스트리머급 간지, 올 황금빛 피부.' },
+      'green': { id: 'green', name: '슈렉 그린', cost: 5, grade: 'Point', desc: '피부색을 화사한 그린으로 변경.' },
+      'purple': { id: 'purple', name: '에일리언 퍼플', cost: 5, grade: 'Point', desc: '신비롭고 힙한 보라색 피부.' },
+      'blue': { id: 'blue', name: '사이버 네온 블루', cost: 10, grade: 'Special', desc: '빛이 나는 형광 네온 블루 피부.' },
+      'gold': { id: 'gold', name: '황금 골드', cost: 15, grade: 'Special', desc: '스트리머급 간지, 올 황금빛 피부.' },
 
       // Room Backgrounds
-      'room_classic': { id: 'room_classic', name: '클래식 오크 🪵', cost: 1, grade: 'Basic', desc: '아늑하고 정겨운 정통 오크 통나무 방.' },
-      'room_forest': { id: 'room_forest', name: '딥 포레스트 🌲', cost: 3, grade: 'Point', desc: '신비롭고 차분한 초록빛 숲속 통나무 방.' },
-      'room_vintage': { id: 'room_vintage', name: '빈티지 애쉬 🌫️', cost: 5, grade: 'Special', desc: '세련되고 현대적인 회색빛 애쉬 통나무 방.' }
+      'room_classic': { id: 'room_classic', name: '클래식 오크', cost: 1, grade: 'Basic', desc: '아늑하고 정겨운 정통 오크 통나무 방.' },
+      'room_forest': { id: 'room_forest', name: '딥 포레스트', cost: 3, grade: 'Point', desc: '신비롭고 차분한 초록빛 숲속 통나무 방.' },
+      'room_vintage': { id: 'room_vintage', name: '빈티지 애쉬', cost: 5, grade: 'Special', desc: '세련되고 현대적인 회색빛 애쉬 통나무 방.' }
     };
 
     // Lucky Box Exclusives
     this.gachaCatalog = {
-      'crown': { id: 'crown', name: '오로라 왕관 👑', grade: 'Special', desc: '럭키박스 한정! 갓생의 왕을 위한 황금 왕관.' },
-      'goggles': { id: 'goggles', name: '레트로 선글라스 🥽', grade: 'Special', desc: '럭키박스 한정! 힙의 절정 사이버펑크 고글.' }
+      'crown': { id: 'crown', name: '오로라 왕관', grade: 'Special', desc: '럭키박스 한정! 왕을 위한 황금 왕관.' },
+      'goggles': { id: 'goggles', name: '레트로 선글라스', grade: 'Special', desc: '럭키박스 한정! 사이버펑크 고글.' }
     };
 
     // Titles Catalog
     this.titlesCatalog = {
-      'beginner': { id: 'beginner', name: '초보 갓생러 🌱', desc: '갓생에 첫 발을 내딛은 귀여운 뉴비.' },
-      'streak3': { id: 'streak3', name: '작심삼일 브레이커 ⚡', desc: '스트릭 3일 달성! 작심삼일 한계 돌파.' },
-      'earlybird': { id: 'earlybird', name: '새벽 5시의 지배자 🌅', desc: '새벽 5~7시 사이에 미션을 완료한 자.' },
-      'rich': { id: 'rich', name: '코인 부자 🪙', desc: '지갑에 코인이 두둑한 자산가.' },
-      'persistent': { id: 'persistent', name: '끈기의 화신 🔥', desc: '스트릭 7일 달성! 꾸준함의 대명사.' },
-      'god': { id: 'god', name: '범접불가 갓생 신 👑', desc: '하루 미션 3개를 완료한 올클리어 레전드.' }
+      'beginner': { id: 'beginner', name: '초보 도전 자', desc: '첫 발을 내딛은 뉴비.' },
+      'streak3': { id: 'streak3', name: '작심삼일 브레이커', desc: '스트릭 3일 달성.' },
+      'earlybird': { id: 'earlybird', name: '새벽의 지배자', desc: '새벽 시간에 미션을 완료한 자.' },
+      'rich': { id: 'rich', name: '코인 부자', desc: '지갑에 코인이 두둑한 자산가.' },
+      'persistent': { id: 'persistent', name: '끈기의 화신', desc: '스트릭 7일 달성.' },
+      'god': { id: 'god', name: '범접불가 레전드', desc: '하루 미션을 올클리어한 자.' }
     };
 
     // Supabase DB item UUID mapping
@@ -567,100 +567,114 @@ class GodsaengStore {
       return { success: false, message: '뽑기에는 2코인이 필요합니다!' };
     }
 
-    await this.deductCoins(cost);
+  // Reset all local storage data to initial state
+  async resetData() {
+    localStorage.removeItem(this.purchasedKey);
+    localStorage.removeItem(this.equippedKey);
+    localStorage.removeItem(this.skinKey);
+    localStorage.removeItem(this.titleKey);
+    localStorage.setItem(this.coinKey, '10'); // Reset to default 10 coins
+    return true;
+  }
 
-    const rand = Math.random();
-
-    if (rand < 0.25) {
-      await this.addCoins(1);
+  // Weighted Gacha Engine (비복원 추출 + 복원 추출 무한 보상)
+  async playLuckyBox() {
+    const cost = 2;
+    const coins = await this.getCoins();
+    if (coins < cost) {
       return {
-        success: true,
-        type: 'fail',
-        name: '소소한 위로',
-        message: '아쉽게 꽝입니다! 위로금 1코인을 돌려 드립니다. 💸'
-      };
-    } else if (rand < 0.60) {
-      // Store item
-      const list = await this.getPurchasedItems();
-      const unowned = Object.keys(this.itemsCatalog).filter(id => !list.includes(id));
-
-      if (unowned.length === 0) {
-        await this.addCoins(2);
-        return {
-          success: true,
-          type: 'refund',
-          name: '만렙 컬렉터',
-          message: '이미 모든 상점 아이템을 소유하고 계십니다! 2코인을 환급합니다.'
-        };
-      }
-
-      const prizeId = unowned[Math.floor(Math.random() * unowned.length)];
-      const prizeItem = this.itemsCatalog[prizeId];
-
-      if (this.isSupabaseActive) {
-        try {
-          const uuid = this.dbItemMapping[prizeId];
-          await this.supabaseClient
-            .from('user_items')
-            .insert({ user_id: this.currentUserId, item_id: uuid, is_equipped: false });
-        } catch (e) {
-          console.error("Supabase playLuckyBox insert failed", e);
-        }
-      }
-
-      const purchased = await this.getPurchasedItems();
-      purchased.push(prizeId);
-      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
-
-      return {
-        success: true,
-        type: 'store_item',
-        itemId: prizeId,
-        name: prizeItem.name,
-        message: `축하합니다! 상점 템 [${prizeItem.name}] 당첨! 🎉`
-      };
-    } else {
-      // Exclusive
-      const list = await this.getPurchasedItems();
-      const exclusives = Object.keys(this.gachaCatalog);
-      const unownedExcl = exclusives.filter(id => !list.includes(id));
-
-      if (unownedExcl.length === 0) {
-        await this.addCoins(2);
-        return {
-          success: true,
-          type: 'refund',
-          name: '럭키박스 지배자',
-          message: '이미 럭키박스 전용 템을 모두 뽑으셨습니다! 2코인을 환급합니다.'
-        };
-      }
-
-      const prizeId = unownedExcl[Math.floor(Math.random() * unownedExcl.length)];
-      const prizeItem = this.gachaCatalog[prizeId];
-
-      if (this.isSupabaseActive) {
-        try {
-          const uuid = this.dbItemMapping[prizeId];
-          await this.supabaseClient
-            .from('user_items')
-            .insert({ user_id: this.currentUserId, item_id: uuid, is_equipped: false });
-        } catch (e) {
-          console.error("Supabase playLuckyBox exclusive insert failed", e);
-        }
-      }
-
-      const purchased = await this.getPurchasedItems();
-      purchased.push(prizeId);
-      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
-
-      return {
-        success: true,
-        type: 'exclusive',
-        itemId: prizeId,
-        name: prizeItem.name,
-        message: `대박!! 럭키박스 한정 템 [${prizeItem.name}] 당첨! 👑✨`
+        success: false,
+        message: '코인이 부족합니다. (필요 코인: 2)'
       };
     }
+
+    await this.deductCoins(cost);
+    const purchased = await this.getPurchasedItems();
+
+    // Group item pools
+    // 1. Legendary (전설) Tier - Finite items (Special grade)
+    const legendaryItems = ['crown', 'goggles', 'gold', 'blue', 'airpods_rainbow', 'iced_coffee_galaxy', 'dumbbell_gold', 'room_vintage'];
+    const unownedLegendary = legendaryItems.filter(id => !purchased.includes(id));
+    const weightLegendaryTotal = unownedLegendary.length * 15;
+
+    // 2. Epic (영웅) Tier - Finite items (Point grade)
+    const epicItems = ['green', 'purple', 'iced_coffee_pink', 'dumbbell_purple', 'airpods_green', 'room_forest'];
+    const unownedEpic = epicItems.filter(id => !purchased.includes(id));
+    const weightEpicTotal = unownedEpic.length * 10;
+
+    // 3. Rare (희귀) Tier - Finite items (Basic grade)
+    const rareItems = ['iced_coffee_black', 'dumbbell_iron', 'airpods_silver', 'sweatband', 'glasses', 'room_classic'];
+    const unownedRare = rareItems.filter(id => !purchased.includes(id));
+    const weightRareTotal = unownedRare.length * 8;
+
+    // 4. Common (일반/코인) Tier - Infinite item (복원 추출)
+    const weightCommonTotal = 40;
+
+    // Calculate total dynamic weight
+    const grandTotalWeight = weightLegendaryTotal + weightEpicTotal + weightRareTotal + weightCommonTotal;
+
+    // Roll random number from 0 to grandTotalWeight
+    let roll = Math.random() * grandTotalWeight;
+
+    // Check Legendary Pool
+    if (roll < weightLegendaryTotal) {
+      const prizeId = unownedLegendary[Math.floor(Math.random() * unownedLegendary.length)];
+      purchased.push(prizeId);
+      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
+      const prizeItem = this.itemsCatalog[prizeId] || this.gachaCatalog[prizeId];
+      return {
+        success: true,
+        type: 'legendary',
+        grade: 'Legendary',
+        itemId: prizeId,
+        name: prizeItem.name,
+        message: `전설 등급 [${prizeItem.name}] 획득`
+      };
+    }
+    roll -= weightLegendaryTotal;
+
+    // Check Epic Pool
+    if (roll < weightEpicTotal) {
+      const prizeId = unownedEpic[Math.floor(Math.random() * unownedEpic.length)];
+      purchased.push(prizeId);
+      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
+      const prizeItem = this.itemsCatalog[prizeId] || this.gachaCatalog[prizeId];
+      return {
+        success: true,
+        type: 'epic',
+        grade: 'Epic',
+        itemId: prizeId,
+        name: prizeItem.name,
+        message: `영웅 등급 [${prizeItem.name}] 획득`
+      };
+    }
+    roll -= weightEpicTotal;
+
+    // Check Rare Pool
+    if (roll < weightRareTotal) {
+      const prizeId = unownedRare[Math.floor(Math.random() * unownedRare.length)];
+      purchased.push(prizeId);
+      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
+      const prizeItem = this.itemsCatalog[prizeId] || this.gachaCatalog[prizeId];
+      return {
+        success: true,
+        type: 'rare',
+        grade: 'Rare',
+        itemId: prizeId,
+        name: prizeItem.name,
+        message: `희귀 등급 [${prizeItem.name}] 획득`
+      };
+    }
+
+    // Common / Coin (Infinite item)
+    await this.addCoins(1);
+    return {
+      success: true,
+      type: 'common',
+      grade: 'Common',
+      name: '코인 환급',
+      message: '일반 등급 당첨. 1코인이 환급되었습니다.'
+    };
   }
 
   // Stats & Grasses

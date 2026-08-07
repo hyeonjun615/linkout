@@ -28,7 +28,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="runtime-config.js"></script>
   
-  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="style.css?v=35">
 </head>
 
 <body>
@@ -316,6 +316,7 @@
           <p class="auth-description">이 계정의 루틴과 기록은 Supabase 클라우드에 동기화됩니다.</p>
           <button type="button" class="auth-secondary-btn" id="importGuestDataBtn" hidden>이 기기의 게스트 기록 가져오기</button>
           <button type="button" class="auth-logout-btn" id="logoutBtn">이 기기에서 로그아웃</button>
+          <button type="button" class="auth-reset-btn" id="resetDataBtn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); width: 100%; padding: 10px; border-radius: 12px; font-weight: 700; margin-top: 12px; cursor: pointer;">데이터 초기화</button>
         </div>
         <p class="auth-status-message" id="authStatusMessage" aria-live="polite"></p>
       </div>

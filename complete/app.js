@@ -375,6 +375,19 @@ function setupEventListeners() {
   document.getElementById('guestLoginBtn').addEventListener('click', continueAsGuest);
   document.getElementById('importGuestDataBtn').addEventListener('click', importGuestDataToSupabase);
   document.getElementById('logoutBtn').addEventListener('click', logoutCurrentUser);
+  document.getElementById('resetDataBtn')?.addEventListener('click', async () => {
+    if (confirm('모든 뽑기 기록과 옷장 데이터, 가중치를 최초 상태로 초기화하시겠습니까?')) {
+      await window.godsaengStore.resetData();
+      await renderMarket();
+      await renderCloset();
+      await updateAvatarDisplay();
+      await renderProbabilityModal();
+      const coins = await window.godsaengStore.getCoins();
+      document.getElementById('coinCount').textContent = coins;
+      alert('모든 데이터가 성공적으로 초기화되었습니다.');
+      closeAuthModal();
+    }
+  });
   renderCustomRoutineLibrary();
 
   // Gacha & Prob Modal
@@ -1402,21 +1415,22 @@ async function renderMarket(category = 'all') {
     if (category !== 'all' && itemCategory !== category) continue;
 
     displayedCount++;
-    const gradeClass = item.grade === 'Special' ? 'tag-special' : (item.grade === 'Point' ? 'tag-point' : 'tag-basic');
+    const gradeText = item.grade === 'Special' ? '전설' : (item.grade === 'Point' ? '영웅' : (item.grade === 'Basic' ? '희귀' : '일반'));
+    const gradeClass = item.grade === 'Special' ? 'tag-special' : (item.grade === 'Point' ? 'tag-epic' : (item.grade === 'Basic' ? 'tag-point' : 'tag-basic'));
 
     const card = document.createElement('div');
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="shop-card-tag ${gradeClass}">${item.grade}</span>
+          <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
           <span class="shop-prob-badge">뽑기 ${storeChancePerItem}%</span>
         </div>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
       </div>
       <div class="shop-card-footer">
-        <span class="shop-card-price">${item.cost} 🪙</span>
+        <span class="shop-card-price">${item.cost} 코인</span>
         <button class="shop-buy-btn" onclick="buyShopItem('${id}')">구매</button>
       </div>
     `;
@@ -1428,7 +1442,7 @@ async function renderMarket(category = 'all') {
     if (displayedCount === 0 && category !== 'all') {
       grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">해당 카테고리에 상점 아이템이 없습니다.</div>';
     } else {
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">🎉 모든 상점 아이템을 구매하셨습니다!</div>';
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">모든 상점 아이템을 구매하셨습니다.</div>';
     }
   }
 }
@@ -1488,15 +1502,16 @@ async function renderCloset(category = 'all') {
     else if (isSkin) actionLabel = id === 'default' && active ? '기본 스킨' : (active ? '스킨 해제' : '스킨 적용');
 
     const itemGrade = item.grade || 'Basic';
-    const gradeClass = itemGrade === 'Special' ? 'tag-special' : (itemGrade === 'Point' ? 'tag-point' : 'tag-basic');
+    const gradeText = itemGrade === 'Special' ? '전설' : (itemGrade === 'Point' ? '영웅' : (itemGrade === 'Basic' ? '희귀' : '일반'));
+    const gradeClass = itemGrade === 'Special' ? 'tag-special' : (itemGrade === 'Point' ? 'tag-epic' : (itemGrade === 'Basic' ? 'tag-point' : 'tag-basic'));
 
     const card = document.createElement('div');
     card.className = 'shop-card';
     card.innerHTML = `
       <div class="shop-card-info">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="shop-card-tag ${gradeClass}">${itemGrade}</span>
-          <span class="shop-prob-badge owned">0.0% (보유함)</span>
+          <span class="shop-card-tag ${gradeClass}">${gradeText}</span>
+          <span class="shop-prob-badge owned">0.0% (소유함)</span>
         </div>
         <span class="shop-card-name">${item.name}</span>
         <span class="shop-card-desc">${item.desc}</span>
@@ -1536,36 +1551,59 @@ async function renderProbabilityModal() {
 
   const purchased = await window.godsaengStore.getPurchasedItems();
 
-  // 1. Exclusive items pool (40% total chance) - Highest Grade (Top)
-  const exclusives = Object.keys(window.godsaengStore.gachaCatalog);
-  const unownedExcl = exclusives.filter(id => !purchased.includes(id));
-  const exclItemChance = unownedExcl.length > 0 ? (40.0 / unownedExcl.length).toFixed(1) : '0.0';
+  // Tier 1: Legendary (전설) - Gold
+  const legendaryItems = ['crown', 'goggles', 'gold', 'blue', 'airpods_rainbow', 'iced_coffee_galaxy', 'dumbbell_gold', 'room_vintage'];
+  const unownedLegendary = legendaryItems.filter(id => !purchased.includes(id));
+  const wLegendary = unownedLegendary.length * 15;
 
-  // 2. Store items pool (35% total chance) - Mid Grade
-  const storeItems = Object.keys(window.godsaengStore.itemsCatalog);
-  const unownedStore = storeItems.filter(id => !purchased.includes(id));
-  const storeItemChance = unownedStore.length > 0 ? (35.0 / unownedStore.length).toFixed(1) : '0.0';
+  // Tier 2: Epic (영웅) - Purple
+  const epicItems = ['green', 'purple', 'iced_coffee_pink', 'dumbbell_purple', 'airpods_green', 'room_forest'];
+  const unownedEpic = epicItems.filter(id => !purchased.includes(id));
+  const wEpic = unownedEpic.length * 10;
+
+  // Tier 3: Rare (희귀) - Blue
+  const rareItems = ['iced_coffee_black', 'dumbbell_iron', 'airpods_silver', 'sweatband', 'glasses', 'room_classic'];
+  const unownedRare = rareItems.filter(id => !purchased.includes(id));
+  const wRare = unownedRare.length * 8;
+
+  // Tier 4: Common (일반/코인) - Gray (Infinite item)
+  const wCommon = 40;
+
+  const wTotal = wLegendary + wEpic + wRare + wCommon;
+
+  const pctLegendary = wTotal > 0 ? ((wLegendary / wTotal) * 100).toFixed(1) : '0.0';
+  const pctEpic = wTotal > 0 ? ((wEpic / wTotal) * 100).toFixed(1) : '0.0';
+  const pctRare = wTotal > 0 ? ((wRare / wTotal) * 100).toFixed(1) : '0.0';
+  const pctCommon = wTotal > 0 ? ((wCommon / wTotal) * 100).toFixed(1) : '0.0';
 
   tbody.innerHTML = `
     <tr class="grade-legendary">
-      <td><strong>전용 아이템 (최고 등급)</strong></td>
+      <td><span class="shop-card-tag tag-special">전설 등급</span></td>
       <td class="text-right">
-        ${unownedExcl.length > 0 
-          ? `<strong>개당 ${exclItemChance}%</strong> <span class="prob-sub-text">(미획득 ${unownedExcl.length}개 / 총 40.0%)</span>` 
-          : `<span class="all-collected-badge">0.0% (수집 완료 / 40.0% 환급)</span>`}
+        ${unownedLegendary.length > 0 
+          ? `<strong>${pctLegendary}%</strong> <span class="prob-sub-text">(남은 수량 ${unownedLegendary.length}개)</span>` 
+          : `<span class="all-collected-badge">0.0% (소진됨)</span>`}
+      </td>
+    </tr>
+    <tr class="grade-epic">
+      <td><span class="shop-card-tag tag-epic">영웅 등급</span></td>
+      <td class="text-right">
+        ${unownedEpic.length > 0 
+          ? `<strong>${pctEpic}%</strong> <span class="prob-sub-text">(남은 수량 ${unownedEpic.length}개)</span>` 
+          : `<span class="all-collected-badge">0.0% (소진됨)</span>`}
       </td>
     </tr>
     <tr class="grade-rare">
-      <td><strong>상점 아이템 (일반 등급)</strong></td>
+      <td><span class="shop-card-tag tag-point">희귀 등급</span></td>
       <td class="text-right">
-        ${unownedStore.length > 0 
-          ? `<strong>개당 ${storeItemChance}%</strong> <span class="prob-sub-text">(미획득 ${unownedStore.length}개 / 총 35.0%)</span>` 
-          : `<span class="all-collected-badge">0.0% (수집 완료 / 35.0% 환급)</span>`}
+        ${unownedRare.length > 0 
+          ? `<strong>${pctRare}%</strong> <span class="prob-sub-text">(남은 수량 ${unownedRare.length}개)</span>` 
+          : `<span class="all-collected-badge">0.0% (소진됨)</span>`}
       </td>
     </tr>
     <tr class="grade-common">
-      <td><strong>꽝 (위로금 1코인)</strong></td>
-      <td class="text-right"><strong>25.0%</strong> <span class="prob-sub-text">(무제한)</span></td>
+      <td><span class="shop-card-tag tag-basic">일반 등급</span></td>
+      <td class="text-right"><strong>${pctCommon}%</strong> <span class="prob-sub-text">(코인 환급)</span></td>
     </tr>
   `;
 }
@@ -1604,30 +1642,26 @@ async function triggerLuckyBox() {
   gachaModal.classList.add('show');
   gachaLight.style.color = rarityColor;
   
-  icon.textContent = '🎁';
+  icon.textContent = '';
   name.textContent = '뽑는 중...';
   name.className = 'gacha-item-name';
   desc.textContent = '';
-  gachaBox.textContent = '🚪';
+  gachaBox.textContent = 'OPEN';
   gachaBox.style.opacity = '1';
 
-  // 1. Shake animation (덜커덕)
+  // 1. Shake animation
   gachaBox.classList.add('shake');
 
   setTimeout(() => {
-    // 2. Open door & glow (문 열림 & 빛)
+    // 2. Open door & glow
     gachaBox.classList.remove('shake');
-    gachaBox.textContent = '✨'; 
+    gachaBox.textContent = 'EFFECT'; 
     gachaLight.classList.add('glowing-burst');
     
-    // 3. Show item (아이템 등장)
+    // 3. Show item
     setTimeout(() => {
       gachaBox.style.opacity = '0';
-      let emoji = '🪙';
-      if (item) {
-        emoji = item.name.split(' ').pop(); // Get last emoji
-      }
-      icon.textContent = emoji;
+      icon.textContent = result.grade ? `[${result.grade}]` : '';
       name.textContent = result.name || result.message;
       name.classList.add(rarityClass);
       desc.textContent = result.message;

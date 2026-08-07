@@ -1571,6 +1571,12 @@ input:focus-visible {
   border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
+.shop-card-tag.tag-epic {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+}
+
 .shop-card-tag.tag-point {
   color: #2563eb;
   background: rgba(37, 99, 235, 0.12);

@@ -1448,10 +1448,10 @@ input:focus-visible {
   z-index: 20;
   margin-top: -16px;
   padding-top: 16px;
-  margin-left: -16px;
-  margin-right: -16px;
-  padding-left: 16px;
-  padding-right: 16px;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
   margin-bottom: 16px;
 }
 
@@ -2152,6 +2152,8 @@ input:focus-visible {
   background-color: var(--surface);
   border-bottom: 1px solid var(--border);
   scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 .closet-category-tabs::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */

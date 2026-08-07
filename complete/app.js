@@ -294,6 +294,25 @@ function setupEventListeners() {
     });
   });
 
+  // Swipe support for Shop/Closet
+  let shopTouchStartX = 0;
+  const shopTabContent = document.getElementById('tab-shop');
+  if (shopTabContent) {
+    shopTabContent.addEventListener('touchstart', e => {
+      shopTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    shopTabContent.addEventListener('touchend', e => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (shopTouchStartX - touchEndX > 50) {
+        // Swiped left, go to closet
+        document.querySelector('.shop-nav-item[data-subtab="closet"]')?.click();
+      } else if (touchEndX - shopTouchStartX > 50) {
+        // Swiped right, go to market
+        document.querySelector('.shop-nav-item[data-subtab="market"]')?.click();
+      }
+    }, { passive: true });
+  }
+
   // Quick routine add button
   document.getElementById('quickAddBtn').addEventListener('click', () => addNewRoutine());
   document.getElementById('quickAddInput').addEventListener('keydown', (e) => {

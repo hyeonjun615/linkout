@@ -28,7 +28,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="runtime-config.js"></script>
   
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=30">
 </head>
 
 <body>
@@ -453,22 +453,19 @@
     <div class="prob-modal" id="probModal" aria-hidden="true">
       <div class="prob-dialog">
         <button class="prob-close-btn" id="probCloseBtn">×</button>
-        <h2>뽑기 확률 안내</h2>
+        <h2>🎲 실시간 뽑기 확률 안내</h2>
+        <p class="prob-sub-desc">보유하신 아이템 수량에 따라 미획득 아이템의 개별 획득 확률이 실시간으로 계산됩니다!</p>
         <div class="prob-table-container">
           <table class="prob-table">
             <thead>
-              <tr><th>등급</th><th>확률</th><th>등장 아이템 (예시)</th></tr>
+              <tr><th>구분</th><th>그룹 확률</th><th>실시간 상태 및 개별 확률</th></tr>
             </thead>
-            <tbody>
-              <tr class="grade-legendary"><td>전설 (금빛)</td><td>5%</td><td>오로라 왕관, 레트로 선글라스</td></tr>
-              <tr class="grade-epic"><td>영웅 (보라빛)</td><td>10%</td><td>사이버 네온 블루, 네온 무지개 에어팟</td></tr>
-              <tr class="grade-rare"><td>희귀 (파란빛)</td><td>25%</td><td>황금 아령, 에일리언 퍼플, 갤럭시 라떼</td></tr>
-              <tr class="grade-uncommon"><td>고급 (초록빛)</td><td>35%</td><td>딸기 라떼, 퍼플 아령, 딥 포레스트 등</td></tr>
-              <tr class="grade-common"><td>일반 (하얀빛)</td><td>25%</td><td>꽝(1코인 반환), 갓생 아아, 클래식 룸 등</td></tr>
+            <tbody id="probTableBody">
+              <!-- Rendered dynamically by renderProbabilityModal() -->
             </tbody>
           </table>
         </div>
-        <p class="prob-notice">* 모든 확률은 개별 아이템 기준이 아닌 등급별 총합 확률입니다.</p>
+        <p class="prob-notice">* 보유 아이템을 모두 수집하면 동일 그룹 당첨 시 2코인이 전액 환급됩니다.</p>
       </div>
     </div>
 

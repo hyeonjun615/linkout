@@ -379,7 +379,8 @@ function setupEventListeners() {
 
   // Gacha & Prob Modal
   document.getElementById('luckyBoxBtn').addEventListener('click', () => triggerLuckyBox());
-  document.getElementById('probInfoBtn')?.addEventListener('click', () => {
+  document.getElementById('probInfoBtn')?.addEventListener('click', async () => {
+    await renderProbabilityModal();
     document.getElementById('probModal').classList.add('show');
   });
   document.getElementById('probCloseBtn')?.addEventListener('click', () => {
@@ -1578,6 +1579,49 @@ async function equipClosetItem(itemId) {
     renderCloset();
     await updateAvatarDisplay();
   }
+}
+
+async function renderProbabilityModal() {
+  const tbody = document.getElementById('probTableBody');
+  if (!tbody || !window.godsaengStore) return;
+
+  const purchased = await window.godsaengStore.getPurchasedItems();
+
+  // 1. Exclusive items pool (40% total chance)
+  const exclusives = Object.keys(window.godsaengStore.gachaCatalog);
+  const unownedExcl = exclusives.filter(id => !purchased.includes(id));
+  const exclChancePerItem = unownedExcl.length > 0 ? (40 / unownedExcl.length).toFixed(1) : 0;
+
+  // 2. Store items pool (40% total chance)
+  const storeItems = Object.keys(window.godsaengStore.itemsCatalog);
+  const unownedStore = storeItems.filter(id => !purchased.includes(id));
+  const storeChancePerItem = unownedStore.length > 0 ? (40 / unownedStore.length).toFixed(1) : 0;
+
+  tbody.innerHTML = `
+    <tr class="grade-legendary">
+      <td><strong>🎁 럭키 전용 템</strong></td>
+      <td>40%</td>
+      <td>
+        ${unownedExcl.length > 0 
+          ? `미획득 ${unownedExcl.length}개 (개당 <strong>${exclChancePerItem}%</strong>)` 
+          : `<span class="all-collected-badge">👑 ALL 수집 완료 (40% 확률로 2코인 환급 & '럭키박스 지배자')</span>`}
+      </td>
+    </tr>
+    <tr class="grade-rare">
+      <td><strong>🛒 일반 상점 템</strong></td>
+      <td>40%</td>
+      <td>
+        ${unownedStore.length > 0 
+          ? `미획득 ${unownedStore.length}개 (개당 <strong>${storeChancePerItem}%</strong>)` 
+          : `<span class="all-collected-badge">👑 ALL 수집 완료 (40% 확률로 2코인 환급 & '만렙 컬렉터')</span>`}
+      </td>
+    </tr>
+    <tr class="grade-common">
+      <td><strong>💸 꽝 (위로금)</strong></td>
+      <td>20%</td>
+      <td>1코인 환급 (꽝 보상)</td>
+    </tr>
+  `;
 }
 
 async function triggerLuckyBox() {

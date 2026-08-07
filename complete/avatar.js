@@ -137,16 +137,17 @@ class AvatarRenderer {
           </filter>
           ${skinRgb ? `
           <filter id="skin-tint" x="-15%" y="-15%" width="130%" height="130%">
-            <feColorMatrix type="matrix" values="${skinMatrix}" />
-            <feComponentTransfer>
-              <feFuncR type="gamma" amplitude="1.18" exponent="0.82" offset="0.03" />
-              <feFuncG type="gamma" amplitude="1.12" exponent="0.88" offset="0.02" />
-              <feFuncB type="gamma" amplitude="1.18" exponent="0.82" offset="0.03" />
-            </feComponentTransfer>
+            <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0
+                                                 0.2126 0.7152 0.0722 0 0
+                                                 0.2126 0.7152 0.0722 0 0
+                                                 0      0      0      1 0" result="gray" />
+            <feColorMatrix type="matrix" values="${skinRgb[0]} 0 0 0 0
+                                                 0 ${skinRgb[1]} 0 0 0
+                                                 0 0 ${skinRgb[2]} 0 0
+                                                 0 0 0 1 0" in="gray" result="tinted" />
+            <feBlend mode="color" in="tinted" in2="SourceGraphic" result="blended" />
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
           </filter>
-          <clipPath id="skin-regions">
-            ${skinRegions}
-          </clipPath>
           ` : ''}
         </defs>
 

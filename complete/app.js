@@ -25,8 +25,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   const splashEl = document.getElementById('splashScreen');
   if (splashEl) splashEl.addEventListener('click', dismissSplash);
 
-  // Auto dismiss splash screen after 800ms
-  setTimeout(dismissSplash, 800);
+  // Auto dismiss splash screen after 1.8 seconds
+  setTimeout(dismissSplash, 1800);
 
   try {
     // 1. Setup real-time clock and midnight detector

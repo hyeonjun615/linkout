@@ -296,19 +296,29 @@ function setupEventListeners() {
 
   // Swipe support for Shop/Closet
   let shopTouchStartX = 0;
+  let shopTouchStartY = 0;
   const shopTabContent = document.getElementById('tab-shop');
   if (shopTabContent) {
     shopTabContent.addEventListener('touchstart', e => {
-      shopTouchStartX = e.changedTouches[0].screenX;
+      if (e.touches.length === 1) {
+        shopTouchStartX = e.touches[0].clientX;
+        shopTouchStartY = e.touches[0].clientY;
+      }
     }, { passive: true });
     shopTabContent.addEventListener('touchend', e => {
-      const touchEndX = e.changedTouches[0].screenX;
-      if (shopTouchStartX - touchEndX > 50) {
-        // Swiped left, go to closet
-        document.querySelector('.shop-nav-item[data-subtab="closet"]')?.click();
-      } else if (touchEndX - shopTouchStartX > 50) {
-        // Swiped right, go to market
-        document.querySelector('.shop-nav-item[data-subtab="market"]')?.click();
+      if (e.changedTouches.length === 1) {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - shopTouchStartX;
+        const diffY = touchEndY - shopTouchStartY;
+        // Only trigger if horizontal movement is dominant and > 45px
+        if (Math.abs(diffX) > Math.abs(diffY) * 1.5 && Math.abs(diffX) > 45) {
+          if (diffX < 0) {
+            document.querySelector('.shop-nav-item[data-subtab="closet"]')?.click();
+          } else {
+            document.querySelector('.shop-nav-item[data-subtab="market"]')?.click();
+          }
+        }
       }
     }, { passive: true });
   }

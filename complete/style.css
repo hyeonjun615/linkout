@@ -1450,8 +1450,8 @@ input:focus-visible {
   padding-top: 16px;
   margin-left: -20px;
   margin-right: -20px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 0;
+  padding-right: 0;
   margin-bottom: 16px;
 }
 
@@ -1460,6 +1460,8 @@ input:focus-visible {
   display: flex;
   border-bottom: 1.5px solid var(--border-color);
   margin-bottom: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .shop-nav-item {
@@ -2147,32 +2149,40 @@ input:focus-visible {
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  padding: 10px 16px;
-  margin-bottom: 8px;
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  margin-bottom: 0;
+  background-color: var(--bg-app);
+  border-bottom: 1px solid var(--border-color);
   scrollbar-width: none; /* Firefox */
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  touch-action: pan-x pan-y;
+}
+.closet-category-tabs::after {
+  content: '';
+  padding-right: 12px;
+  flex-shrink: 0;
 }
 .closet-category-tabs::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
 .closet-tab {
   flex-shrink: 0;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 16px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   transition: all 0.2s;
+  cursor: pointer;
+  user-select: none;
 }
 .closet-tab.active {
-  background: var(--border-color);
-  color: var(--text-main);
-  border-color: var(--text-muted);
+  background: #4B5563;
+  color: #FFFFFF;
+  border-color: #374151;
 }
 
 /* ==========================================================================

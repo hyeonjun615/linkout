@@ -241,7 +241,7 @@ class AvatarRenderer {
           preserveAspectRatio="xMidYMid meet" filter="url(#character-pop)" />
         ${skinRgb ? `
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint)" clip-path="url(#skin-regions)" opacity="0.82" />
+          preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint)" opacity="0.65" style="mix-blend-mode: color;" />
         ` : ''}
       </g>
     `;

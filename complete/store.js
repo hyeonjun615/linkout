@@ -268,25 +268,29 @@ class GodsaengStore {
   }
 
   async getPurchasedItems() {
-    if (this.isSupabaseActive) {
+    let list = [];
+    try {
+      const localList = JSON.parse(localStorage.getItem(this.purchasedKey) || '[]');
+      if (Array.isArray(localList)) list.push(...localList);
+    } catch (e) {}
+
+    if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
       try {
         const { data, error } = await this.supabaseClient
           .from('user_items')
           .select('item_id');
         if (!error && data) {
-          const list = data.map(d => this.localItemMapping[d.item_id]).filter(Boolean);
-          if (!list.includes('room_classic')) list.push('room_classic');
-          return list;
+          data.forEach(d => {
+            const localId = this.localItemMapping[d.item_id];
+            if (localId && !list.includes(localId)) list.push(localId);
+          });
         }
       } catch (e) {
         console.error("Supabase getPurchasedItems failed", e);
       }
     }
-    const list = JSON.parse(localStorage.getItem(this.purchasedKey) || '[]');
-    if (!list.includes('room_classic')) {
-      list.push('room_classic');
-      localStorage.setItem(this.purchasedKey, JSON.stringify(list));
-    }
+    if (!list.includes('room_classic')) list.push('room_classic');
+    localStorage.setItem(this.purchasedKey, JSON.stringify(list));
     return list;
   }
 
@@ -524,23 +528,33 @@ class GodsaengStore {
 
   // Active Skin & Title getters for local fallback compatibility
   async getActiveSkin() {
-    if (this.isSupabaseActive) {
+    const localSkin = localStorage.getItem(this.skinKey);
+    if (localSkin) return localSkin;
+
+    if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
       try {
         const { data, error } = await this.supabaseClient
           .from('profiles')
           .select('equipped_skin')
           .eq('id', this.currentUserId)
           .single();
-        if (!error && data) return data.equipped_skin || 'default';
+        if (!error && data) {
+          const skin = data.equipped_skin || 'default';
+          localStorage.setItem(this.skinKey, skin);
+          return skin;
+        }
       } catch (e) {
         console.error("Supabase getActiveSkin failed", e);
       }
     }
-    return localStorage.getItem(this.skinKey) || 'default';
+    return 'default';
   }
 
   async getActiveTitle() {
-    if (this.isSupabaseActive) {
+    const localTitle = localStorage.getItem(this.titleKey);
+    if (localTitle) return localTitle;
+
+    if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
       try {
         const { data, error } = await this.supabaseClient
           .from('profiles')
@@ -548,15 +562,17 @@ class GodsaengStore {
           .eq('id', this.currentUserId)
           .single();
         if (!error && data) {
-          return data.equipped_title
+          const title = data.equipped_title
             ? (this.localItemMapping[data.equipped_title] || 'beginner')
             : 'none';
+          localStorage.setItem(this.titleKey, title);
+          return title;
         }
       } catch (e) {
         console.error("Supabase getActiveTitle failed", e);
       }
     }
-    return localStorage.getItem(this.titleKey) || 'beginner';
+    return 'beginner';
   }
 
   // Reset all local storage data to initial state

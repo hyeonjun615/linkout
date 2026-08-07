@@ -36,28 +36,6 @@
   <!-- Mockup Phone Container -->
   <div class="phone-container">
 
-    <!-- Phone Top Status Bar -->
-    <div class="phone-header-bar">
-      <span class="phone-time" id="phoneTime">09:41</span>
-      <div class="dynamic-island"></div>
-      <div class="phone-icons">
-        <svg class="phone-icon" viewBox="0 0 17 11">
-          <rect x="0" y="8" width="2" height="3" rx="0.5" />
-          <rect x="4" y="6" width="2" height="5" rx="0.5" />
-          <rect x="8" y="4" width="2" height="7" rx="0.5" />
-          <rect x="12" y="1" width="2" height="10" rx="0.5" />
-        </svg>
-        <svg class="phone-icon" viewBox="0 0 17 11" style="width: 14px;">
-          <path d="M8.5,9 C7.8,9 7.2,9.3 6.8,9.7 L8.5,11.5 L10.2,9.7 C9.8,9.3 9.2,9 C8.5,9 Z M8.5,4 C6.7,4 5,4.7 3.8,5.9 L4.8,6.9 C5.7,6.1 7,5.6 8.5,5.6 C10,5.6 11.3,6.1 12.2,6.9 L13.2,5.9 C12,4.7 10.3,4 8.5,4 Z M8.5,0 C5.5,0 2.7,1.2 0.7,3.2 L1.7,4.2 C3.4,2.5 5.8,1.5 8.5,1.5 C11.2,1.5 13.6,2.5 15.3,4.2 L16.3,3.2 C14.3,1.2 11.5,0 8.5,0 Z" />
-        </svg>
-        <svg class="phone-icon" viewBox="0 0 17 11" style="width: 19px;">
-          <rect x="0" y="1.5" width="13" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1" />
-          <rect x="2" y="3.5" width="9" height="4" rx="1" />
-          <path d="M14,4.5 L14,6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
-      </div>
-    </div>
-
     <!-- Active Screen -->
     <div class="app-screen">
 
@@ -254,6 +232,16 @@
           <button class="shop-nav-item" data-subtab="closet">내 옷장 (OOTD)</button>
         </div>
 
+        <!-- Shared Category Tabs for both Market and Closet -->
+        <div class="closet-category-tabs" id="shopCategoryTabs">
+          <button class="closet-tab active" data-category="all">전체</button>
+          <button class="closet-tab" data-category="top">스킨(상의)</button>
+          <button class="closet-tab" data-category="bottom">하의</button>
+          <button class="closet-tab" data-category="accessory">장신구</button>
+          <button class="closet-tab" data-category="background">배경</button>
+          <button class="closet-tab" data-category="title">칭호</button>
+        </div>
+
         <!-- Subtab contents -->
         <div class="shop-subcontent-panel active" id="subtab-market">
           <div class="shop-items-grid" id="marketGrid">
@@ -262,14 +250,6 @@
         </div>
 
         <div class="shop-subcontent-panel" id="subtab-closet">
-          <div class="closet-category-tabs" id="closetCategoryTabs">
-            <button class="closet-tab active" data-category="all">전체</button>
-            <button class="closet-tab" data-category="top">상의</button>
-            <button class="closet-tab" data-category="bottom">하의</button>
-            <button class="closet-tab" data-category="accessory">장신구</button>
-            <button class="closet-tab" data-category="background">배경</button>
-            <button class="closet-tab" data-category="title">칭호</button>
-          </div>
           <div class="shop-items-grid" id="closetGrid">
             <!-- Equip/Unequip wardrobe items list -->
           </div>

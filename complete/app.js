@@ -282,9 +282,11 @@ function setupEventListeners() {
       document.getElementById(`subtab-${targetId}`).classList.add('active');
 
       if (targetId === 'closet') {
-        renderCloset();
+        const cat = document.querySelector('.closet-tab.active')?.getAttribute('data-category') || 'all';
+        renderCloset(cat);
       } else {
-        renderMarket();
+        const cat = document.querySelector('.closet-tab.active')?.getAttribute('data-category') || 'all';
+        renderMarket(cat);
       }
     });
   });
@@ -295,7 +297,9 @@ function setupEventListeners() {
     tab.addEventListener('click', () => {
       closetTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      renderCloset(tab.getAttribute('data-category'));
+      const cat = tab.getAttribute('data-category');
+      renderCloset(cat);
+      renderMarket(cat);
     });
   });
 
@@ -1380,9 +1384,15 @@ function renderArchiveList() {
 // SHOP SYSTEM IMPLEMENTATION
 // ==========================================================================
 
-async function renderMarket() {
+async function renderMarket(category = 'all') {
   const grid = document.getElementById('marketGrid');
   if (!grid || !document.getElementById('subtab-market').classList.contains('active')) return;
+
+  // Active category tab fallback
+  const activeTab = document.querySelector('.closet-tab.active');
+  if (activeTab && category === 'all') {
+    category = activeTab.getAttribute('data-category') || 'all';
+  }
 
   grid.innerHTML = '';
   const purchased = await window.godsaengStore.getPurchasedItems();
@@ -1394,9 +1404,25 @@ async function renderMarket() {
     return (gradeOrder[b[1].grade] || 0) - (gradeOrder[a[1].grade] || 0);
   });
 
+  let displayedCount = 0;
+
   for (const [id, item] of sortedItems) {
     const isOwned = purchased.includes(id);
-    if (isOwned) continue; // 사용자가 요청한 '보유 중인 아이템은 상점에서 사라지게 만들기' 적용
+    if (isOwned) continue; // 보유 중인 아이템은 상점에서 사라지게 만들기
+
+    // Determine category
+    let itemCategory = 'accessory';
+    if (id.startsWith('room_')) {
+      itemCategory = 'background';
+    } else if (Object.keys(window.godsaengStore.titlesCatalog).includes(id)) {
+      itemCategory = 'title';
+    } else if (['default', 'green', 'purple', 'blue', 'gold'].includes(id)) {
+      itemCategory = 'top'; // Map skins to 'top'
+    }
+
+    if (category !== 'all' && itemCategory !== category) continue;
+
+    displayedCount++;
 
     const card = document.createElement('div');
     card.className = 'shop-card';
@@ -1416,7 +1442,11 @@ async function renderMarket() {
 
   // 상점이 비어있을 경우 안내 문구 노출
   if (grid.innerHTML === '') {
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">🎉 모든 상점 아이템을 구매하셨습니다!</div>';
+    if (displayedCount === 0 && category !== 'all') {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">해당 카테고리에 상점 아이템이 없습니다.</div>';
+    } else {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">🎉 모든 상점 아이템을 구매하셨습니다!</div>';
+    }
   }
 }
 

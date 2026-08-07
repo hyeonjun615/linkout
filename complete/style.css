@@ -159,9 +159,10 @@ body {
 }
 
 .splash-screen.hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
+  transform: translateY(-100%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
 }
 
 .splash-title-box {

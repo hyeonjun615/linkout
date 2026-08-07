@@ -13,15 +13,20 @@ const AUTH_CHOICE_STORAGE_KEY = 'complete_auth_choice';
 window.addEventListener('DOMContentLoaded', async () => {
   const dismissSplash = () => {
     const splash = document.getElementById('splashScreen');
-    if (splash && !splash.classList.contains('hidden')) {
-      splash.style.opacity = '0';
-      splash.style.transform = 'translateY(-30px) scale(0.95)';
-      setTimeout(() => splash.classList.add('hidden'), 600);
+    if (splash) {
+      splash.classList.add('hidden');
+      splash.style.pointerEvents = 'none';
+      setTimeout(() => {
+        splash.style.display = 'none';
+      }, 500);
     }
   };
 
-  // Fail-safe timer to guarantee splash screen disappears
-  setTimeout(dismissSplash, 1200);
+  const splashEl = document.getElementById('splashScreen');
+  if (splashEl) splashEl.addEventListener('click', dismissSplash);
+
+  // Auto dismiss splash screen after 800ms
+  setTimeout(dismissSplash, 800);
 
   try {
     // 1. Setup real-time clock and midnight detector

@@ -2360,6 +2360,12 @@ input:focus-visible {
 .all-collected-badge {
   font-size: 11px; color: #d97706; font-weight: bold; line-height: 1.3; display: inline-block;
 }
+.prob-sub-text {
+  font-size: 11px; color: var(--text-muted); font-weight: normal; margin-left: 2px;
+}
+.text-right {
+  text-align: right;
+}
 .prob-table-container {
   max-height: 300px;
   overflow-y: auto;

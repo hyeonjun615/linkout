@@ -1600,26 +1600,23 @@ async function renderProbabilityModal() {
   tbody.innerHTML = `
     <tr class="grade-legendary">
       <td><strong>🎁 럭키 전용 템</strong></td>
-      <td>40%</td>
-      <td>
+      <td class="text-right">
         ${unownedExcl.length > 0 
-          ? `미획득 ${unownedExcl.length}개 (개당 <strong>${exclChancePerItem}%</strong>)` 
-          : `<span class="all-collected-badge">👑 ALL 수집 완료 (40% 확률로 2코인 환급 & '럭키박스 지배자')</span>`}
+          ? `<strong>개당 ${exclChancePerItem}%</strong> <span class="prob-sub-text">(${unownedExcl.length}개 남음)</span>` 
+          : `<span class="all-collected-badge">👑 수집 완료 (2코인 환급)</span>`}
       </td>
     </tr>
     <tr class="grade-rare">
       <td><strong>🛒 일반 상점 템</strong></td>
-      <td>40%</td>
-      <td>
+      <td class="text-right">
         ${unownedStore.length > 0 
-          ? `미획득 ${unownedStore.length}개 (개당 <strong>${storeChancePerItem}%</strong>)` 
-          : `<span class="all-collected-badge">👑 ALL 수집 완료 (40% 확률로 2코인 환급 & '만렙 컬렉터')</span>`}
+          ? `<strong>개당 ${storeChancePerItem}%</strong> <span class="prob-sub-text">(${unownedStore.length}개 남음)</span>` 
+          : `<span class="all-collected-badge">👑 수집 완료 (2코인 환급)</span>`}
       </td>
     </tr>
     <tr class="grade-common">
       <td><strong>💸 꽝 (위로금)</strong></td>
-      <td>20%</td>
-      <td>1코인 환급 (꽝 보상)</td>
+      <td class="text-right"><strong>20%</strong> <span class="prob-sub-text">(1코인 환급)</span></td>
     </tr>
   `;
 }

@@ -412,6 +412,39 @@ class GodsaengStore {
       return true;
     }
 
+    const isRoom = itemId.startsWith('room_');
+    if (isRoom) {
+      let equipped = JSON.parse(localStorage.getItem(this.equippedKey) || '[]');
+      const currentRoom = equipped.find(id => id.startsWith('room_')) || 'room_classic';
+      const nextRoom = currentRoom === itemId ? currentRoom : itemId;
+      equipped = equipped.filter(id => !id.startsWith('room_'));
+      equipped.push(nextRoom);
+      localStorage.setItem(this.equippedKey, JSON.stringify(equipped));
+
+      if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
+        try {
+          const roomUuids = Object.entries(this.dbItemMapping)
+            .filter(([id]) => id.startsWith('room_'))
+            .map(([, uuid]) => uuid);
+          await this.supabaseClient
+            .from('user_items')
+            .update({ is_equipped: false })
+            .eq('user_id', this.currentUserId)
+            .in('item_id', roomUuids);
+          await this.supabaseClient
+            .from('user_items')
+            .upsert({
+              user_id: this.currentUserId,
+              item_id: this.dbItemMapping[nextRoom],
+              is_equipped: true
+            }, { onConflict: 'user_id,item_id' });
+        } catch (e) {
+          console.info("배경 교체는 로컬에 저장되었습니다.");
+        }
+      }
+      return true;
+    }
+
     // Normal Accessory & Crown / Goggles toggle logic
     let equipped = JSON.parse(localStorage.getItem(this.equippedKey) || '[]');
     const isEquipping = !equipped.includes(itemId);

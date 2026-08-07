@@ -11,80 +11,90 @@ const AUTH_CHOICE_STORAGE_KEY = 'complete_auth_choice';
 
 // App Init entry point
 window.addEventListener('DOMContentLoaded', async () => {
-  // 1. Setup real-time clock and midnight detector
-  setInterval(checkMidnightUpdate, 5000); // Check midnight transition every 5s
-
-  // 2. Initialize date navigator to today (KST)
-  const offset = 9 * 60 * 60 * 1000;
-  const kstDate = new Date(Date.now() + offset);
-  currentDateStr = kstDate.toISOString().split('T')[0];
-  lastKnownTodayStr = currentDateStr;
-  document.getElementById('datePicker').value = currentDateStr;
-
-  // 3. Local-first data layer with optional Supabase session sync.
-  const SUPABASE_URL = window.LOCKIN_CONFIG?.SUPABASE_URL || '';
-  const SUPABASE_ANON_KEY = window.LOCKIN_CONFIG?.SUPABASE_ANON_KEY || '';
-  
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
-    try {
-      dbSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      dbSupabase.auth.onAuthStateChange((_event, session) => {
-        window.setTimeout(() => applySupabaseSession(session?.user || null), 0);
-      });
-    } catch (e) {
-      console.info("오프라인 로컬 모드로 시작합니다.");
-    }
-  }
-  if (dbSupabase) {
-    const { data } = await dbSupabase.auth.getSession();
-    currentAuthUser = data.session?.user || null;
-    if (currentAuthUser) localStorage.setItem(AUTH_CHOICE_STORAGE_KEY, 'account');
-  }
-  window.godsaengStore.setupSupabase(
-    currentAuthUser ? dbSupabase : null,
-    currentAuthUser?.id || null
-  );
-  window.godsaengStore.setLocalScope(getActiveStorageScope());
-
-  // Initialize store configuration
-  await window.godsaengStore.init();
-  if (currentAuthUser) await loadCustomRoutinesFromCloud();
-  updateSyncStatus(window.godsaengStore.isSupabaseActive ? 'cloud' : 'local');
-  window.addEventListener('online', () => updateSyncStatus(window.godsaengStore.isSupabaseActive ? 'cloud' : 'local'));
-  window.addEventListener('offline', () => updateSyncStatus('offline'));
-
-  // Load saved API key in UI
-  document.getElementById('apiKeyInput').value = window.visionAI.getApiKey();
-
-  // 4. Bind DOM Events
-  setupEventListeners();
-  renderAuthView();
-
-  // 5. Load data for active date
-  await loadStateForDate(currentDateStr);
-  if (!currentAuthUser && !localStorage.getItem(AUTH_CHOICE_STORAGE_KEY)) {
-    openAuthModal();
-  }
-
-  // Hide Splash screen with zoom fade
-  setTimeout(() => {
+  const dismissSplash = () => {
     const splash = document.getElementById('splashScreen');
-    splash.style.opacity = '0';
-    splash.style.transform = 'translateY(-30px) scale(0.95)';
-    setTimeout(() => {
-      splash.classList.add('hidden');
-    }, 600);
-  }, 1800);
+    if (splash && !splash.classList.contains('hidden')) {
+      splash.style.opacity = '0';
+      splash.style.transform = 'translateY(-30px) scale(0.95)';
+      setTimeout(() => splash.classList.add('hidden'), 600);
+    }
+  };
 
-  // Initialize tab pills tracker
-  positionTabIndicator();
-  window.addEventListener('resize', positionTabIndicator);
-  lucide.createIcons();
+  // Fail-safe timer to guarantee splash screen disappears
+  setTimeout(dismissSplash, 1200);
 
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      console.info('오프라인 캐시는 다음 실행에서 다시 준비합니다.');
-    });
+  try {
+    // 1. Setup real-time clock and midnight detector
+    setInterval(checkMidnightUpdate, 5000);
+
+    // 2. Initialize date navigator to today (KST)
+    const offset = 9 * 60 * 60 * 1000;
+    const kstDate = new Date(Date.now() + offset);
+    currentDateStr = kstDate.toISOString().split('T')[0];
+    lastKnownTodayStr = currentDateStr;
+    const datePicker = document.getElementById('datePicker');
+    if (datePicker) datePicker.value = currentDateStr;
+
+    // 3. Local-first data layer with optional Supabase session sync.
+    const SUPABASE_URL = window.LOCKIN_CONFIG?.SUPABASE_URL || '';
+    const SUPABASE_ANON_KEY = window.LOCKIN_CONFIG?.SUPABASE_ANON_KEY || '';
+    
+    if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
+      try {
+        dbSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        dbSupabase.auth.onAuthStateChange((_event, session) => {
+          window.setTimeout(() => applySupabaseSession(session?.user || null), 0);
+        });
+      } catch (e) {
+        console.info("오프라인 로컬 모드로 시작합니다.");
+      }
+    }
+    if (dbSupabase) {
+      try {
+        const { data } = await dbSupabase.auth.getSession();
+        currentAuthUser = data?.session?.user || null;
+        if (currentAuthUser) localStorage.setItem(AUTH_CHOICE_STORAGE_KEY, 'account');
+      } catch (e) {
+        console.info("세션 확인 건너뜀");
+      }
+    }
+    window.godsaengStore.setupSupabase(
+      currentAuthUser ? dbSupabase : null,
+      currentAuthUser?.id || null
+    );
+    window.godsaengStore.setLocalScope(getActiveStorageScope());
+
+    // Initialize store configuration
+    await window.godsaengStore.init();
+    if (currentAuthUser) await loadCustomRoutinesFromCloud();
+    updateSyncStatus(window.godsaengStore.isSupabaseActive ? 'cloud' : 'local');
+    window.addEventListener('online', () => updateSyncStatus(window.godsaengStore.isSupabaseActive ? 'cloud' : 'local'));
+    window.addEventListener('offline', () => updateSyncStatus('offline'));
+
+    // Load saved API key in UI
+    const keyInput = document.getElementById('apiKeyInput');
+    if (keyInput) keyInput.value = window.visionAI.getApiKey();
+
+    // 4. Bind DOM Events
+    setupEventListeners();
+    renderAuthView();
+
+    // 5. Load data for active date
+    await loadStateForDate(currentDateStr);
+    if (!currentAuthUser && !localStorage.getItem(AUTH_CHOICE_STORAGE_KEY)) {
+      openAuthModal();
+    }
+  } catch (err) {
+    console.error("앱 초기화 중 오류 발생 (안전 모드로 전환):", err);
+  } finally {
+    dismissSplash();
+    positionTabIndicator();
+    window.addEventListener('resize', positionTabIndicator);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
   }
 });
 

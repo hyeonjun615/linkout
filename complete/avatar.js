@@ -122,9 +122,9 @@ class AvatarRenderer {
             <stop offset="100%" stop-color="#140a04" />
           </linearGradient>
           <radialGradient id="gold-aura-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(255, 226, 89, 0.85)" />
-            <stop offset="50%" stop-color="rgba(255, 167, 81, 0.45)" />
-            <stop offset="100%" stop-color="rgba(255, 215, 0, 0)" />
+            <stop offset="0%" stop-color="rgba(212, 175, 55, 0.50)" />
+            <stop offset="60%" stop-color="rgba(184, 134, 11, 0.25)" />
+            <stop offset="100%" stop-color="rgba(212, 175, 55, 0)" />
           </radialGradient>
           <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -145,7 +145,7 @@ class AvatarRenderer {
               0.9 1.1 0.2 0 0.20
               0.1 0.3 0.1 0 0.05
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#48bb78" flood-opacity="0.5" />
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#48bb78" flood-opacity="0.4" />
           </filter>
 
           <filter id="skin-tint-purple" x="-20%" y="-20%" width="140%" height="140%">
@@ -154,7 +154,7 @@ class AvatarRenderer {
               0.1 0.2 0.1 0 0.05
               1.0 0.4 0.9 0 0.35
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#9f7aea" flood-opacity="0.5" />
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#9f7aea" flood-opacity="0.4" />
           </filter>
 
           <filter id="skin-tint-blue" x="-20%" y="-20%" width="140%" height="140%">
@@ -163,17 +163,29 @@ class AvatarRenderer {
               0.5 0.8 0.4 0 0.20
               0.8 0.9 1.2 0 0.40
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00f2fe" flood-opacity="0.5" />
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#00f2fe" flood-opacity="0.4" />
           </filter>
 
+          <!-- Realistic Champagne Gold Matrix (Not neon yellow) -->
           <filter id="skin-tint-gold" x="-20%" y="-20%" width="140%" height="140%">
             <feColorMatrix type="matrix" values="
-              1.55 0.25 0.00 0 0.22
-              1.20 0.95 0.00 0 0.12
-              0.05 0.05 0.05 0 0.00
+              1.18 0.15 0.05 0 0.16
+              0.88 0.68 0.05 0 0.10
+              0.18 0.15 0.10 0 0.02
               0.00 0.00 0.00 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#ffd700" flood-opacity="0.75" />
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#d4af37" flood-opacity="0.45" />
           </filter>
+
+          <!-- Soft Feathered Mask for Seamless Skin Isolation -->
+          <filter id="mask-feather">
+            <feGaussianBlur stdDeviation="3.5" />
+          </filter>
+          <mask id="skin-mask-soft">
+            <rect x="0" y="0" width="200" height="200" fill="black" />
+            <g fill="white" filter="url(#mask-feather)">
+              ${skinRegions}
+            </g>
+          </mask>
         </defs>
 
         <rect x="0" y="0" width="200" height="200" fill="url(#wood-plank)" />
@@ -258,14 +270,14 @@ class AvatarRenderer {
         <g id="gold-skin-aura">
           <!-- Golden Radial Aura Halo -->
           <circle cx="100" cy="${anchor.headY + 30}" r="65" fill="url(#gold-aura-grad)" filter="url(#neon-glow)" opacity="0.95" />
-          <circle cx="100" cy="${anchor.headY + 30}" r="45" fill="none" stroke="#ffe259" stroke-width="2" stroke-dasharray="6 4" filter="url(#neon-glow)" opacity="0.8" />
+          <circle cx="100" cy="${anchor.headY + 30}" r="45" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="6 4" filter="url(#neon-glow)" opacity="0.7" />
           
           <!-- Floating Golden Sparkle Stars -->
           <g fill="#ffe259" filter="url(#neon-glow)">
             <path d="M 45 40 Q 52 40 52 33 Q 52 40 59 40 Q 52 40 52 47 Q 52 40 45 40 Z" />
             <path d="M 142 35 Q 148 35 148 29 Q 148 35 154 35 Q 148 35 148 41 Q 148 35 142 35 Z" fill="#ffffff" />
             <path d="M 148 115 Q 153 115 153 110 Q 153 115 158 115 Q 153 115 153 120 Q 153 115 148 115 Z" />
-            <path d="M 40 120 Q 45 120 45 115 Q 45 120 50 120 Q 45 120 45 125 Q 45 120 40 120 Z" fill="#ffd700" />
+            <path d="M 40 120 Q 45 120 45 115 Q 45 120 50 120 Q 45 120 45 125 Q 45 120 40 120 Z" fill="#d4af37" />
           </g>
         </g>
       `;
@@ -273,8 +285,17 @@ class AvatarRenderer {
 
     svgContent += `
       <g id="character-body">
+        <!-- Layer 1: Base image (Original blanket/cloak 100% intact, un-tinted) -->
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="${activeSkin !== 'default' ? 'url(#skin-tint-' + activeSkin + ')' : 'url(#character-pop)'}" />
+          preserveAspectRatio="xMidYMid meet" filter="url(#character-pop)" />
+
+        ${activeSkin !== 'default' ? `
+          <!-- Layer 2: Soft Feathered Masked Skin Layer (Recolors ONLY the sprout face/head inside cloak) -->
+          <g mask="url(#skin-mask-soft)">
+            <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
+              preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint-${activeSkin})" />
+          </g>
+        ` : ''}
       </g>
     `;
 

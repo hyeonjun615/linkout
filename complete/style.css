@@ -1734,7 +1734,7 @@ input:focus-visible {
 }
 
 .tab-item.active {
-  color: var(--primary-dark);
+  color: var(--text-main);
   font-weight: 850;
 }
 
@@ -1760,9 +1760,8 @@ input:focus-visible {
 .tab-indicator-pill {
   width: 68px;
   height: 52px;
-  background: #9fe870;
+  background: rgba(159, 232, 112, 0.35);
   border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(159, 232, 112, 0.45);
 }
 
 /* ==========================================================================

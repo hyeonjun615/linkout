@@ -133,12 +133,49 @@ class AvatarRenderer {
               <feFuncB type="linear" slope="1.08" intercept="0.01" />
             </feComponentTransfer>
           </filter>
-          ${hueAngle !== undefined ? `
-          <filter id="skin-tint" x="-15%" y="-15%" width="130%" height="130%">
-            <feColorMatrix type="hueRotate" values="${hueAngle}" result="rotated" />
+          <!-- Isolated Skin Tint Filters (Green, Purple, Blue, Gold) -->
+          <filter id="skin-tint-green" x="-15%" y="-15%" width="130%" height="130%">
+            <feColorMatrix type="matrix" values="
+              0.1 0.2 0.0 0 0.05
+              0.9 1.1 0.2 0 0.20
+              0.1 0.3 0.1 0 0.05
+              0.0 0.0 0.0 1 0.00" />
             <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
           </filter>
-          ` : ''}
+
+          <filter id="skin-tint-purple" x="-15%" y="-15%" width="130%" height="130%">
+            <feColorMatrix type="matrix" values="
+              0.8 0.2 0.2 0 0.25
+              0.1 0.2 0.1 0 0.05
+              1.0 0.4 0.9 0 0.35
+              0.0 0.0 0.0 1 0.00" />
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+          </filter>
+
+          <filter id="skin-tint-blue" x="-15%" y="-15%" width="130%" height="130%">
+            <feColorMatrix type="matrix" values="
+              0.0 0.1 0.1 0 0.00
+              0.5 0.8 0.4 0 0.20
+              0.8 0.9 1.2 0 0.40
+              0.0 0.0 0.0 1 0.00" />
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+          </filter>
+
+          <filter id="skin-tint-gold" x="-15%" y="-15%" width="130%" height="130%">
+            <feColorMatrix type="matrix" values="
+              1.6 0.3 0.0 0 0.25
+              1.3 0.9 0.0 0 0.15
+              0.1 0.1 0.0 0 0.00
+              0.0 0.0 0.0 1 0.00" />
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+          </filter>
+
+          <mask id="skin-mask">
+            <rect x="0" y="0" width="200" height="200" fill="black" />
+            <g fill="white">
+              ${skinRegions}
+            </g>
+          </mask>
         </defs>
 
         <rect x="0" y="0" width="200" height="200" fill="url(#wood-plank)" />
@@ -219,8 +256,17 @@ class AvatarRenderer {
 
     svgContent += `
       <g id="character-body">
+        <!-- Layer 1: Base image (Original blanket/cloak intact) -->
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="${hueAngle !== undefined ? 'url(#skin-tint)' : 'url(#character-pop)'}" />
+          preserveAspectRatio="xMidYMid meet" filter="url(#character-pop)" />
+
+        ${activeSkin !== 'default' ? `
+          <!-- Layer 2: Masked skin layer (Recolors ONLY sprout skin face/head inside cloak) -->
+          <g mask="url(#skin-mask)">
+            <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
+              preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint-${activeSkin})" />
+          </g>
+        ` : ''}
       </g>
     `;
 

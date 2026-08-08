@@ -229,6 +229,17 @@
           </div>
         </div>
 
+        <!-- Shop Live Avatar Fitting Preview -->
+        <div class="shop-avatar-preview-card">
+          <div class="shop-avatar-display" id="shopAvatarBox">
+            <!-- Live SVG compiled by avatar.js renders here -->
+          </div>
+          <div class="shop-avatar-info">
+            <div class="shop-avatar-title" id="shopEquippedTitleText">초보 갓생러 🌱</div>
+            <div class="shop-avatar-subtext">실시간 피팅룸 · 아이템 장착 시 즉시 반영됩니다</div>
+          </div>
+        </div>
+
         <!-- Subtabs inside shop: Inventory / Market -->
         <!-- Sticky Header for Shop (Nav + Categories) -->
         <div class="shop-sticky-header">
@@ -462,7 +473,10 @@
           <div class="gacha-item-icon" id="gachaItemIcon"></div>
           <div class="gacha-item-name" id="gachaItemName"></div>
           <div class="gacha-item-desc" id="gachaItemDesc"></div>
-          <button class="gacha-close-btn" id="gachaCloseBtn">확인</button>
+          <div class="gacha-btn-group" style="display: flex; gap: 8px; width: 100%; justify-content: center;">
+            <button class="gacha-equip-btn" id="gachaEquipBtn" style="display: none;">✨ 바로 장착하기</button>
+            <button class="gacha-close-btn" id="gachaCloseBtn">확인</button>
+          </div>
         </div>
       </div>
     </div>

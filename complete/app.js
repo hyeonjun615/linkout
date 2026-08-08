@@ -444,10 +444,12 @@ function setupEventListeners() {
   document.getElementById('probCloseBtn')?.addEventListener('click', () => {
     document.getElementById('probModal').classList.remove('show');
   });
-  document.getElementById('gachaCloseBtn')?.addEventListener('click', async () => {
+  const closeGachaModal = async () => {
     const modal = document.getElementById('gachaModal');
-    modal.classList.remove('show');
-    setTimeout(() => { modal.style.display = 'none'; }, 300);
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
     const gachaBox = document.getElementById('gachaBox');
     if (gachaBox) {
       gachaBox.textContent = '🚪';
@@ -456,6 +458,15 @@ function setupEventListeners() {
     await renderMarket();
     await renderCloset(currentClosetCategory);
     await updateAvatarDisplay();
+  };
+
+  document.getElementById('gachaCloseBtn')?.addEventListener('click', closeGachaModal);
+
+  document.getElementById('gachaEquipBtn')?.addEventListener('click', async () => {
+    if (window.lastGachaItemId) {
+      await window.godsaengStore.equipItem(window.lastGachaItemId);
+    }
+    await closeGachaModal();
   });
 
   // Camera closing and webcam switches
@@ -1291,9 +1302,6 @@ async function addNewRoutine(templateValue = '') {
 
 // Draw Avatar SVG representation dynamically
 async function updateAvatarDisplay() {
-  const box = document.getElementById('avatarBox');
-  if (!box) return;
-
   const completedCount = currentRoutines.filter(r => r.is_done).length;
   const equipped = await window.godsaengStore.getEquippedItems();
   const activeSkin = await window.godsaengStore.getActiveSkin();
@@ -1301,8 +1309,13 @@ async function updateAvatarDisplay() {
 
   // Set equipped title name
   const titleObj = window.godsaengStore.titlesCatalog[activeTitle];
-  document.getElementById('equippedTitleText').textContent =
-    activeTitle === 'none' ? '칭호 없음' : (titleObj ? titleObj.name : '초보 갓생러 🌱');
+  const titleText = activeTitle === 'none' ? '칭호 없음' : (titleObj ? titleObj.name : '초보 갓생러 🌱');
+
+  const mainTitleEl = document.getElementById('equippedTitleText');
+  if (mainTitleEl) mainTitleEl.textContent = titleText;
+
+  const shopTitleEl = document.getElementById('shopEquippedTitleText');
+  if (shopTitleEl) shopTitleEl.textContent = titleText;
 
   // Any success today immediately clears lazy mode.
   const isLazy = completedCount === 0 && await checkYesterdayLazyStatus();
@@ -1319,7 +1332,12 @@ async function updateAvatarDisplay() {
   };
 
   const svg = window.avatarRenderer.render(renderState);
-  box.innerHTML = svg;
+  
+  const box = document.getElementById('avatarBox');
+  if (box) box.innerHTML = svg;
+
+  const shopBox = document.getElementById('shopAvatarBox');
+  if (shopBox) shopBox.innerHTML = svg;
 }
 
 // Grass Grid handler
@@ -1581,19 +1599,33 @@ async function renderCloset(category) {
 
 async function buyShopItem(itemId) {
   const result = await window.godsaengStore.buyItem(itemId);
-  alert(result.message);
   
   if (result.success) {
     const coins = await window.godsaengStore.getCoins();
-    document.getElementById('coinCount').textContent = coins;
-    renderMarket();
+    const coinEl = document.getElementById('coinCount');
+    if (coinEl) coinEl.textContent = coins;
+
+    const itemObj = window.godsaengStore.itemsCatalog[itemId] || window.godsaengStore.gachaCatalog[itemId];
+    const itemName = itemObj ? itemObj.name : itemId;
+
+    const autoEquip = confirm(`"${itemName}" 구매 성공!\n\n지금 바로 장착하시겠습니까?`);
+    if (autoEquip) {
+      await window.godsaengStore.equipItem(itemId);
+      const closetTabBtn = document.querySelector('.shop-nav-item[data-subtab="closet"]');
+      if (closetTabBtn) closetTabBtn.click();
+    }
+    await renderMarket();
+    await renderCloset(currentClosetCategory);
+    await updateAvatarDisplay();
+  } else {
+    alert(result.message);
   }
 }
 
 async function equipClosetItem(itemId) {
   const success = await window.godsaengStore.equipItem(itemId);
   if (success) {
-    renderCloset();
+    await renderCloset(currentClosetCategory);
     await updateAvatarDisplay();
   }
 }
@@ -1758,12 +1790,23 @@ async function triggerLuckyBox() {
       icon.className = `gacha-item-icon ${gradeTagClass}`;
       name.textContent = result.name || result.message;
       desc.textContent = result.message;
+
+      if (result.itemId) {
+        window.lastGachaItemId = result.itemId;
+        const equipBtn = document.getElementById('gachaEquipBtn');
+        if (equipBtn) equipBtn.style.display = 'inline-block';
+      } else {
+        window.lastGachaItemId = null;
+        const equipBtn = document.getElementById('gachaEquipBtn');
+        if (equipBtn) equipBtn.style.display = 'none';
+      }
+
       gachaResult.classList.add('float-up');
 
       // Update store UI
       window.godsaengStore.getCoins().then(c => document.getElementById('coinCount').textContent = c);
       await renderMarket();
-      await renderCloset();
+      await renderCloset(currentClosetCategory);
       await updateAvatarDisplay();
     }, 400);
   }, totalOpenDelay);

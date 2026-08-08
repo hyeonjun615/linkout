@@ -699,8 +699,7 @@ class GodsaengStore {
     // Check Rare Pool
     if (roll < weightRareTotal) {
       const prizeId = unownedRare[Math.floor(Math.random() * unownedRare.length)];
-      purchased.push(prizeId);
-      localStorage.setItem(this.purchasedKey, JSON.stringify(purchased));
+      await this.addPurchasedItem(prizeId);
       const prizeItem = this.itemsCatalog[prizeId] || this.gachaCatalog[prizeId];
       return {
         success: true,

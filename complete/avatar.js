@@ -19,17 +19,13 @@ class AvatarRenderer {
     const level = state.level !== undefined ? state.level : 0;
     const activeSkin = state.skin || 'default';
 
-    const skinColors = {
-      green: [0.28, 0.73, 0.47],
-      purple: [0.62, 0.48, 0.92],
-      blue: [0.08, 0.78, 0.96],
-      gold: [0.95, 0.65, 0.12]
+    const skinHueAngles = {
+      green: 45,
+      purple: 170,
+      blue: 90,
+      gold: -50
     };
-    const skinRgb = skinColors[activeSkin] || null;
-    const luminance = [0.2126, 0.7152, 0.0722];
-    const skinMatrix = skinRgb
-      ? `${skinRgb.map(channel => luminance.map(weight => (channel * weight).toFixed(4)).join(' ') + ' 0 0').join(' ')} 0 0 0 1 0`
-      : '';
+    const hueAngle = skinHueAngles[activeSkin];
 
     const skinRegions = [
       `
@@ -137,12 +133,9 @@ class AvatarRenderer {
               <feFuncB type="linear" slope="1.08" intercept="0.01" />
             </feComponentTransfer>
           </filter>
-          ${skinRgb ? `
+          ${hueAngle !== undefined ? `
           <filter id="skin-tint" x="-15%" y="-15%" width="130%" height="130%">
-            <feColorMatrix type="matrix" values="${skinRgb[0]} 0 0 0 0
-                                                 0 ${skinRgb[1]} 0 0 0
-                                                 0 0 ${skinRgb[2]} 0 0
-                                                 0 0 0 1 0" result="tinted" />
+            <feColorMatrix type="hueRotate" values="${hueAngle}" result="rotated" />
             <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
           </filter>
           ` : ''}
@@ -227,7 +220,7 @@ class AvatarRenderer {
     svgContent += `
       <g id="character-body">
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="${skinRgb ? 'url(#skin-tint)' : 'url(#character-pop)'}" />
+          preserveAspectRatio="xMidYMid meet" filter="${hueAngle !== undefined ? 'url(#skin-tint)' : 'url(#character-pop)'}" />
       </g>
     `;
 
@@ -273,7 +266,7 @@ class AvatarRenderer {
 
     // 에어팟 맥스 (AirPods Max) - 머리 양옆 귀 위치
     const activeAirpods = items.find(id => id.startsWith('airpods'));
-    if (activeAirpods && level > 0) {
+    if (activeAirpods) {
       const bandLeft = 100 - anchor.headHalfWidth + 8;
       const bandRight = 100 + anchor.headHalfWidth - 8;
       const cupLeft = 100 - anchor.headHalfWidth - 4;
@@ -319,7 +312,7 @@ class AvatarRenderer {
 
     // 갓생 아아 (Iced Coffee)
     const activeCoffee = items.find(id => id.startsWith('iced_coffee'));
-    if (activeCoffee && level > 0) {
+    if (activeCoffee) {
       const cx = level === 3 ? anchor.rightHandX : 160;
       const cy = level === 3 ? anchor.rightHandY - 2 : 124;
       
@@ -351,7 +344,7 @@ class AvatarRenderer {
 
     // 득근 아령 (Dumbbell)
     const activeDumbbell = items.find(id => id.startsWith('dumbbell'));
-    if (activeDumbbell && level > 0) {
+    if (activeDumbbell) {
       const dx = level === 3 ? anchor.leftHandX : 35;
       const dy = level === 3 ? anchor.leftHandY : 137;
       
@@ -386,7 +379,7 @@ class AvatarRenderer {
     }
 
     // 땀밴드/안경 아이템 (OOTD)
-    if (items.includes('sweatband') && level > 0) {
+    if (items.includes('sweatband')) {
       svgContent += `
         <!-- OOTD: Sweatband -->
         <g id="ootd-sweatband">
@@ -399,7 +392,7 @@ class AvatarRenderer {
       `;
     }
 
-    if (items.includes('glasses') && level > 0) {
+    if (items.includes('glasses')) {
       svgContent += `
         <!-- OOTD: Glasses -->
         <g id="ootd-glasses" stroke="#163300" stroke-width="3" fill="none">
@@ -413,7 +406,7 @@ class AvatarRenderer {
     }
 
     // 금빛 왕관 (Aurora Crown) - 머리 위
-    if (items.includes('crown') && level > 0) {
+    if (items.includes('crown')) {
       const cy_y = anchor.headY;
       svgContent += `
         <!-- OOTD: Aurora Crown -->
@@ -428,7 +421,7 @@ class AvatarRenderer {
     }
 
     // 사이버 고글 (Retro Sunglasses) - 눈 위
-    if (items.includes('goggles') && level > 0) {
+    if (items.includes('goggles')) {
       const gy = anchor.eyeY;
       svgContent += `
         <!-- OOTD: Retro Goggles -->

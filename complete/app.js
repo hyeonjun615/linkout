@@ -92,8 +92,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     console.error("앱 초기화 중 오류 발생 (안전 모드로 전환):", err);
   } finally {
-    dismissSplash();
-    positionTabIndicator();
+    setTimeout(() => {
+      dismissSplash();
+      positionTabIndicator();
+    }, 1000);
     window.addEventListener('resize', positionTabIndicator);
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -443,14 +445,16 @@ function setupEventListeners() {
     document.getElementById('probModal').classList.remove('show');
   });
   document.getElementById('gachaCloseBtn')?.addEventListener('click', async () => {
-    document.getElementById('gachaModal').classList.remove('show');
+    const modal = document.getElementById('gachaModal');
+    modal.classList.remove('show');
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
     const gachaBox = document.getElementById('gachaBox');
     if (gachaBox) {
       gachaBox.textContent = '🚪';
       gachaBox.style.opacity = '1';
     }
     await renderMarket();
-    await renderCloset();
+    await renderCloset(currentClosetCategory);
     await updateAvatarDisplay();
   });
 
@@ -1420,7 +1424,11 @@ async function renderWeeklyStats() {
   });
 }
 
-async function renderMarket(category = 'all') {
+async function renderMarket(category) {
+  if (category === undefined) {
+    const activeTab = document.querySelector('.closet-tab.active');
+    category = activeTab ? (activeTab.getAttribute('data-category') || 'all') : 'all';
+  }
   const grid = document.getElementById('marketGrid');
   if (!grid || !document.getElementById('subtab-market').classList.contains('active')) return;
 
@@ -1485,7 +1493,11 @@ async function renderMarket(category = 'all') {
   }
 }
 
-async function renderCloset(category = 'all') {
+async function renderCloset(category) {
+  if (category === undefined) {
+    const activeTab = document.querySelector('.closet-tab.active');
+    category = activeTab ? (activeTab.getAttribute('data-category') || 'all') : 'all';
+  }
   const grid = document.getElementById('closetGrid');
   if (!grid) return;
 
@@ -1686,6 +1698,8 @@ async function triggerLuckyBox() {
   if (closetAura) closetAura.className = 'closet-aura';
   gachaLight.classList.remove('glowing-burst');
   gachaResult.classList.remove('float-up');
+  gachaModal.style.display = 'flex';
+  void gachaModal.offsetWidth; // force reflow
   gachaModal.classList.add('show');
   gachaLight.style.color = finalColor;
 

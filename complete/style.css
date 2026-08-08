@@ -2259,7 +2259,7 @@ input:focus-visible {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.85);
   z-index: 10000;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   opacity: 0;
@@ -2267,6 +2267,7 @@ input:focus-visible {
   transition: opacity 0.3s;
 }
 .gacha-modal.show, .prob-modal.show {
+  display: flex;
   opacity: 1;
   pointer-events: auto;
 }

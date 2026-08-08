@@ -121,6 +121,11 @@ class AvatarRenderer {
             <stop offset="50%" stop-color="#1e1108" />
             <stop offset="100%" stop-color="#140a04" />
           </linearGradient>
+          <radialGradient id="gold-aura-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(255, 226, 89, 0.85)" />
+            <stop offset="50%" stop-color="rgba(255, 167, 81, 0.45)" />
+            <stop offset="100%" stop-color="rgba(255, 215, 0, 0)" />
+          </radialGradient>
           <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -134,48 +139,41 @@ class AvatarRenderer {
             </feComponentTransfer>
           </filter>
           <!-- Isolated Skin Tint Filters (Green, Purple, Blue, Gold) -->
-          <filter id="skin-tint-green" x="-15%" y="-15%" width="130%" height="130%">
+          <filter id="skin-tint-green" x="-20%" y="-20%" width="140%" height="140%">
             <feColorMatrix type="matrix" values="
               0.1 0.2 0.0 0 0.05
               0.9 1.1 0.2 0 0.20
               0.1 0.3 0.1 0 0.05
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#48bb78" flood-opacity="0.5" />
           </filter>
 
-          <filter id="skin-tint-purple" x="-15%" y="-15%" width="130%" height="130%">
+          <filter id="skin-tint-purple" x="-20%" y="-20%" width="140%" height="140%">
             <feColorMatrix type="matrix" values="
               0.8 0.2 0.2 0 0.25
               0.1 0.2 0.1 0 0.05
               1.0 0.4 0.9 0 0.35
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#9f7aea" flood-opacity="0.5" />
           </filter>
 
-          <filter id="skin-tint-blue" x="-15%" y="-15%" width="130%" height="130%">
+          <filter id="skin-tint-blue" x="-20%" y="-20%" width="140%" height="140%">
             <feColorMatrix type="matrix" values="
               0.0 0.1 0.1 0 0.00
               0.5 0.8 0.4 0 0.20
               0.8 0.9 1.2 0 0.40
               0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00f2fe" flood-opacity="0.5" />
           </filter>
 
-          <filter id="skin-tint-gold" x="-15%" y="-15%" width="130%" height="130%">
+          <filter id="skin-tint-gold" x="-20%" y="-20%" width="140%" height="140%">
             <feColorMatrix type="matrix" values="
-              1.6 0.3 0.0 0 0.25
-              1.3 0.9 0.0 0 0.15
-              0.1 0.1 0.0 0 0.00
-              0.0 0.0 0.0 1 0.00" />
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0e0f0c" flood-opacity="0.32" />
+              1.55 0.25 0.00 0 0.22
+              1.20 0.95 0.00 0 0.12
+              0.05 0.05 0.05 0 0.00
+              0.00 0.00 0.00 1 0.00" />
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#ffd700" flood-opacity="0.75" />
           </filter>
-
-          <mask id="skin-mask">
-            <rect x="0" y="0" width="200" height="200" fill="black" />
-            <g fill="white">
-              ${skinRegions}
-            </g>
-          </mask>
         </defs>
 
         <rect x="0" y="0" width="200" height="200" fill="url(#wood-plank)" />
@@ -254,19 +252,29 @@ class AvatarRenderer {
       sproutImg = 'sprout_stage4_cutout.webp';
     }
 
+    // Special Gold Skin Golden Halo & Twinkling Golden Stars
+    if (activeSkin === 'gold') {
+      svgContent += `
+        <g id="gold-skin-aura">
+          <!-- Golden Radial Aura Halo -->
+          <circle cx="100" cy="${anchor.headY + 30}" r="65" fill="url(#gold-aura-grad)" filter="url(#neon-glow)" opacity="0.95" />
+          <circle cx="100" cy="${anchor.headY + 30}" r="45" fill="none" stroke="#ffe259" stroke-width="2" stroke-dasharray="6 4" filter="url(#neon-glow)" opacity="0.8" />
+          
+          <!-- Floating Golden Sparkle Stars -->
+          <g fill="#ffe259" filter="url(#neon-glow)">
+            <path d="M 45 40 Q 52 40 52 33 Q 52 40 59 40 Q 52 40 52 47 Q 52 40 45 40 Z" />
+            <path d="M 142 35 Q 148 35 148 29 Q 148 35 154 35 Q 148 35 148 41 Q 148 35 142 35 Z" fill="#ffffff" />
+            <path d="M 148 115 Q 153 115 153 110 Q 153 115 158 115 Q 153 115 153 120 Q 153 115 148 115 Z" />
+            <path d="M 40 120 Q 45 120 45 115 Q 45 120 50 120 Q 45 120 45 125 Q 45 120 40 120 Z" fill="#ffd700" />
+          </g>
+        </g>
+      `;
+    }
+
     svgContent += `
       <g id="character-body">
-        <!-- Layer 1: Base image (Original blanket/cloak intact) -->
         <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-          preserveAspectRatio="xMidYMid meet" filter="url(#character-pop)" />
-
-        ${activeSkin !== 'default' ? `
-          <!-- Layer 2: Masked skin layer (Recolors ONLY sprout skin face/head inside cloak) -->
-          <g mask="url(#skin-mask)">
-            <image href="${sproutImg}" x="${frame.x}" y="${frame.y}" width="${frame.size}" height="${frame.size}"
-              preserveAspectRatio="xMidYMid meet" filter="url(#skin-tint-${activeSkin})" />
-          </g>
-        ` : ''}
+          preserveAspectRatio="xMidYMid meet" filter="${activeSkin !== 'default' ? 'url(#skin-tint-' + activeSkin + ')' : 'url(#character-pop)'}" />
       </g>
     `;
 

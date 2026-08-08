@@ -1681,6 +1681,12 @@ input:focus-visible {
   box-shadow: 0 2px 8px rgba(159, 232, 112, 0.4);
 }
 
+.shop-card.active-equipped-card {
+  border: 1.5px solid #9fe870 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f4fce8 100%) !important;
+  box-shadow: 0 4px 14px rgba(159, 232, 112, 0.2) !important;
+}
+
 /* ==========================================================================
    TAB BAR NAVIGATION with Sliding Capsule Track
    ========================================================================== */

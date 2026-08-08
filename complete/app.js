@@ -8,6 +8,8 @@ const TASKS_STORAGE_KEY = 'complete_tasks_map';
 const REWARDS_STORAGE_KEY = 'complete_task_rewards';
 const CUSTOM_ROUTINES_STORAGE_KEY = 'complete_custom_routines';
 const AUTH_CHOICE_STORAGE_KEY = 'complete_auth_choice';
+let currentMarketCategory = 'all';
+let currentClosetCategory = 'all';
 
 // App Init entry point
 window.addEventListener('DOMContentLoaded', async () => {
@@ -279,8 +281,6 @@ function setupEventListeners() {
   });
 
   // Separate Market / Closet category state
-  let currentMarketCategory = 'all';
-  let currentClosetCategory = 'all';
 
   // Shop subtabs
   const shopNavItems = document.querySelectorAll('.shop-nav-item');
@@ -1565,7 +1565,7 @@ async function renderCloset(category) {
     const gradeClass = itemGrade === 'Special' ? 'tag-special' : (itemGrade === 'Point' ? 'tag-epic' : (itemGrade === 'Basic' ? 'tag-point' : 'tag-basic'));
 
     const card = document.createElement('div');
-    card.className = 'shop-card';
+    card.className = `shop-card ${active ? 'active-equipped-card' : ''}`;
     card.innerHTML = `
       <div class="shop-card-info">
         <span class="shop-card-tag ${gradeClass}">${gradeText}</span>

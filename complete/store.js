@@ -286,23 +286,7 @@ class GodsaengStore {
       if (Array.isArray(localList)) list.push(...localList);
     } catch (e) {}
 
-    if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
-      try {
-        const { data, error } = await this.supabaseClient
-          .from('user_items')
-          .select('item_id');
-        if (!error && data) {
-          data.forEach(d => {
-            const localId = this.localItemMapping[d.item_id];
-            if (localId && !list.includes(localId)) list.push(localId);
-          });
-        }
-      } catch (e) {
-        console.error("Supabase getPurchasedItems failed", e);
-      }
-    }
     if (!list.includes('room_classic')) list.push('room_classic');
-    localStorage.setItem(this.purchasedKey, JSON.stringify(list));
     return list;
   }
 

@@ -327,46 +327,6 @@ class GodsaengStore {
 
   // Equipment Management
   async getEquippedItems() {
-    if (this.isSupabaseActive) {
-      try {
-        const { data: profile } = await this.supabaseClient
-          .from('profiles')
-          .select('equipped_skin, equipped_title')
-          .eq('id', this.currentUserId)
-          .single();
-
-        const { data: userItems } = await this.supabaseClient
-          .from('user_items')
-          .select('item_id')
-          .eq('user_id', this.currentUserId)
-          .eq('is_equipped', true);
-
-        let list = [];
-        if (profile) {
-          const skin = profile.equipped_skin || 'default';
-          const title = profile.equipped_title
-            ? (this.localItemMapping[profile.equipped_title] || 'beginner')
-            : 'none';
-          list.push(skin);
-          if (title !== 'none') list.push(title);
-        }
-        if (userItems) {
-          userItems.forEach(u => {
-            const localId = this.localItemMapping[u.item_id];
-            if (localId) list.push(localId);
-          });
-        }
-        if (!list.some(id => id.startsWith('room_'))) {
-          list.push('room_classic');
-        }
-        localStorage.setItem(this.equippedKey, JSON.stringify(
-          list.filter(id => !['default', 'green', 'purple', 'blue', 'gold'].includes(id) && !Object.keys(this.titlesCatalog).includes(id))
-        ));
-        return list;
-      } catch (e) {
-        console.error("Supabase getEquippedItems failed", e);
-      }
-    }
     const list = JSON.parse(localStorage.getItem(this.equippedKey) || '[]');
     if (!list.some(id => id.startsWith('room_'))) {
       list.push('room_classic');
@@ -375,9 +335,6 @@ class GodsaengStore {
     const activeTitle = localStorage.getItem(this.titleKey) || 'beginner';
     if (!list.includes(activeSkin)) list.push(activeSkin);
     if (activeTitle !== 'none' && !list.includes(activeTitle)) list.push(activeTitle);
-    localStorage.setItem(this.equippedKey, JSON.stringify(
-      list.filter(id => !['default', 'green', 'purple', 'blue', 'gold'].includes(id) && !Object.keys(this.titlesCatalog).includes(id))
-    ));
     return list;
   }
 
@@ -394,15 +351,13 @@ class GodsaengStore {
       const nextSkin = itemId !== 'default' && currentSkin === itemId ? 'default' : itemId;
       localStorage.setItem(this.skinKey, nextSkin);
 
-      if (this.isSupabaseActive) {
-        try {
-          await this.supabaseClient
-            .from('profiles')
-            .update({ equipped_skin: nextSkin })
-            .eq('id', this.currentUserId);
-        } catch (e) {
-          console.info("스킨 변경은 로컬에 저장되었고 동기화는 나중에 다시 시도합니다.");
-        }
+      if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
+        this.supabaseClient
+          .from('profiles')
+          .update({ equipped_skin: nextSkin })
+          .eq('id', this.currentUserId)
+          .then(() => {})
+          .catch(e => console.info("스킨 변경 백그라운드 동기화", e));
       }
       return true;
     }
@@ -413,17 +368,15 @@ class GodsaengStore {
       const nextTitle = currentTitle === itemId ? 'none' : itemId;
       localStorage.setItem(this.titleKey, nextTitle);
 
-      if (this.isSupabaseActive) {
-        try {
-          await this.supabaseClient
-            .from('profiles')
-            .update({
-              equipped_title: nextTitle === 'none' ? null : this.dbItemMapping[nextTitle]
-            })
-            .eq('id', this.currentUserId);
-        } catch (e) {
-          console.info("칭호 변경은 로컬에 저장되었고 동기화는 나중에 다시 시도합니다.");
-        }
+      if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
+        this.supabaseClient
+          .from('profiles')
+          .update({
+            equipped_title: nextTitle === 'none' ? null : this.dbItemMapping[nextTitle]
+          })
+          .eq('id', this.currentUserId)
+          .then(() => {})
+          .catch(e => console.info("칭호 변경 백그라운드 동기화", e));
       }
       return true;
     }
@@ -438,25 +391,24 @@ class GodsaengStore {
       localStorage.setItem(this.equippedKey, JSON.stringify(equipped));
 
       if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
-        try {
-          const roomUuids = Object.entries(this.dbItemMapping)
-            .filter(([id]) => id.startsWith('room_'))
-            .map(([, uuid]) => uuid);
-          await this.supabaseClient
-            .from('user_items')
-            .update({ is_equipped: false })
-            .eq('user_id', this.currentUserId)
-            .in('item_id', roomUuids);
-          await this.supabaseClient
-            .from('user_items')
-            .upsert({
-              user_id: this.currentUserId,
-              item_id: this.dbItemMapping[nextRoom],
-              is_equipped: true
-            }, { onConflict: 'user_id,item_id' });
-        } catch (e) {
-          console.info("배경 교체는 로컬에 저장되었습니다.");
-        }
+        const roomUuids = Object.entries(this.dbItemMapping)
+          .filter(([id]) => id.startsWith('room_'))
+          .map(([, uuid]) => uuid);
+        this.supabaseClient
+          .from('user_items')
+          .update({ is_equipped: false })
+          .eq('user_id', this.currentUserId)
+          .in('item_id', roomUuids)
+          .then(() => {
+            return this.supabaseClient
+              .from('user_items')
+              .upsert({
+                user_id: this.currentUserId,
+                item_id: this.dbItemMapping[nextRoom],
+                is_equipped: true
+              }, { onConflict: 'user_id,item_id' });
+          })
+          .catch(e => console.info("배경 교체 백그라운드 동기화", e));
       }
       return true;
     }
@@ -482,58 +434,58 @@ class GodsaengStore {
     localStorage.setItem(this.equippedKey, JSON.stringify(equipped));
 
     if (this.isSupabaseActive && this.supabaseClient && this.currentUserId) {
-      try {
-        const uuid = this.dbItemMapping[itemId];
+      (async () => {
+        try {
+          const uuid = this.dbItemMapping[itemId];
+          let categoryPrefix = '';
+          if (itemId.startsWith('airpods')) categoryPrefix = 'airpods';
+          else if (itemId.startsWith('iced_coffee')) categoryPrefix = 'iced_coffee';
+          else if (itemId.startsWith('dumbbell')) categoryPrefix = 'dumbbell';
 
-        // Exclusivity unequip target selection in Supabase
-        let categoryPrefix = '';
-        if (itemId.startsWith('airpods')) categoryPrefix = 'airpods';
-        else if (itemId.startsWith('iced_coffee')) categoryPrefix = 'iced_coffee';
-        else if (itemId.startsWith('dumbbell')) categoryPrefix = 'dumbbell';
+          if (isEquipping) {
+            if (categoryPrefix) {
+              const exclusiveUuids = Object.entries(this.dbItemMapping)
+                .filter(([k]) => k.startsWith(categoryPrefix) && k !== itemId)
+                .map(([, v]) => v);
 
-        if (isEquipping) {
-          if (categoryPrefix) {
-            const exclusiveUuids = Object.entries(this.dbItemMapping)
-              .filter(([k]) => k.startsWith(categoryPrefix) && k !== itemId)
-              .map(([, v]) => v);
-
-            await this.supabaseClient
-              .from('user_items')
-              .update({ is_equipped: false })
-              .eq('user_id', this.currentUserId)
-              .in('item_id', exclusiveUuids);
-          }
-          if (itemId === 'crown' || itemId === 'goggles') {
-            const oppUuid = this.dbItemMapping[itemId === 'crown' ? 'goggles' : 'crown'];
-            if (oppUuid) {
               await this.supabaseClient
                 .from('user_items')
                 .update({ is_equipped: false })
                 .eq('user_id', this.currentUserId)
-                .eq('item_id', oppUuid);
+                .in('item_id', exclusiveUuids);
+            }
+            if (itemId === 'crown' || itemId === 'goggles') {
+              const oppUuid = this.dbItemMapping[itemId === 'crown' ? 'goggles' : 'crown'];
+              if (oppUuid) {
+                await this.supabaseClient
+                  .from('user_items')
+                  .update({ is_equipped: false })
+                  .eq('user_id', this.currentUserId)
+                  .eq('item_id', oppUuid);
+              }
+            }
+            if (uuid) {
+              await this.supabaseClient
+                .from('user_items')
+                .upsert({
+                  user_id: this.currentUserId,
+                  item_id: uuid,
+                  is_equipped: true
+                }, { onConflict: 'user_id,item_id' });
+            }
+          } else {
+            if (uuid) {
+              await this.supabaseClient
+                .from('user_items')
+                .update({ is_equipped: false })
+                .eq('user_id', this.currentUserId)
+                .eq('item_id', uuid);
             }
           }
-          if (uuid) {
-            await this.supabaseClient
-              .from('user_items')
-              .upsert({
-                user_id: this.currentUserId,
-                item_id: uuid,
-                is_equipped: true
-              }, { onConflict: 'user_id,item_id' });
-          }
-        } else {
-          if (uuid) {
-            await this.supabaseClient
-              .from('user_items')
-              .update({ is_equipped: false })
-              .eq('user_id', this.currentUserId)
-              .eq('item_id', uuid);
-          }
+        } catch (e) {
+          console.error("Supabase equipItem background sync error", e);
         }
-      } catch (e) {
-        console.error("Supabase equipItem failed, using local fallback", e);
-      }
+      })();
     }
     return true;
   }

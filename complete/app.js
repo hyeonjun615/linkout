@@ -1314,9 +1314,6 @@ async function updateAvatarDisplay() {
   const mainTitleEl = document.getElementById('equippedTitleText');
   if (mainTitleEl) mainTitleEl.textContent = titleText;
 
-  const shopTitleEl = document.getElementById('shopEquippedTitleText');
-  if (shopTitleEl) shopTitleEl.textContent = titleText;
-
   // Any success today immediately clears lazy mode.
   const isLazy = completedCount === 0 && await checkYesterdayLazyStatus();
 
@@ -1335,9 +1332,6 @@ async function updateAvatarDisplay() {
   
   const box = document.getElementById('avatarBox');
   if (box) box.innerHTML = svg;
-
-  const shopBox = document.getElementById('shopAvatarBox');
-  if (shopBox) shopBox.innerHTML = svg;
 }
 
 // Grass Grid handler
@@ -1599,26 +1593,15 @@ async function renderCloset(category) {
 
 async function buyShopItem(itemId) {
   const result = await window.godsaengStore.buyItem(itemId);
+  alert(result.message);
   
   if (result.success) {
     const coins = await window.godsaengStore.getCoins();
     const coinEl = document.getElementById('coinCount');
     if (coinEl) coinEl.textContent = coins;
-
-    const itemObj = window.godsaengStore.itemsCatalog[itemId] || window.godsaengStore.gachaCatalog[itemId];
-    const itemName = itemObj ? itemObj.name : itemId;
-
-    const autoEquip = confirm(`"${itemName}" 구매 성공!\n\n지금 바로 장착하시겠습니까?`);
-    if (autoEquip) {
-      await window.godsaengStore.equipItem(itemId);
-      const closetTabBtn = document.querySelector('.shop-nav-item[data-subtab="closet"]');
-      if (closetTabBtn) closetTabBtn.click();
-    }
     await renderMarket();
     await renderCloset(currentClosetCategory);
     await updateAvatarDisplay();
-  } else {
-    alert(result.message);
   }
 }
 
